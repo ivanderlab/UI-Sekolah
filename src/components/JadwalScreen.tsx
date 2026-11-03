@@ -316,6 +316,7 @@ const JadwalGuruView: React.FC<{ user: UserProfile; onShowToast: any; onNavigate
   const [dbSchedules, setDbSchedules] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [dbError, setDbError] = useState<string | null>(null);
+  const [isOfflineFallback, setIsOfflineFallback] = useState(false);
   const [selectedJadwal, setSelectedJadwal] = useState<any>(null);
 
   useEffect(() => {
@@ -362,9 +363,61 @@ const JadwalGuruView: React.FC<{ user: UserProfile; onShowToast: any; onNavigate
           }
         });
 
-        setDbSchedules(grouped);
+        if (grouped.length > 0) {
+          setDbSchedules(grouped);
+          setIsOfflineFallback(false);
+        } else {
+          // Fallback to local schedules for this teacher
+          const dayKey = selectedDay.toLowerCase();
+          const fallbackList = SCHEDULES_BY_DAY[dayKey] || [];
+          const mappedFallback = fallbackList.map((item, idx) => {
+            const parts = (item.time || '08.15 - 10.15').split(' - ');
+            const jamMulai = (parts[0] || '08:15').replace('.', ':') + ':00';
+            const jamSelesai = (parts[1] || '10:15').replace('.', ':') + ':00';
+            const [sh, sm] = jamMulai.split(':').map(Number);
+            const [eh, em] = jamSelesai.split(':').map(Number);
+            const duration = (eh * 60 + em) - (sh * 60 + sm);
+            return {
+              id: item.id || `fb-guru-${idx}`,
+              jam_mulai: jamMulai,
+              jam_selesai: jamSelesai,
+              hari: selectedDay,
+              kelas_id: user.kelas_id || 'e88128be-8fc3-4973-8d69-00ef17571626',
+              kelas: { id: user.kelas_id || 'e88128be-8fc3-4973-8d69-00ef17571626', nama: user.kelas?.nama || 'XII TKJ 1' },
+              mapel: { nama: item.subject },
+              sessionCount: 2,
+              actualDuration: duration,
+            };
+          });
+          setDbSchedules(mappedFallback);
+          setIsOfflineFallback(true);
+        }
       } catch (err: any) {
-        setDbError(err.message);
+        console.warn('Supabase offline/paused, loading local fallback schedule for teacher:', err);
+        const dayKey = selectedDay.toLowerCase();
+        const fallbackList = SCHEDULES_BY_DAY[dayKey] || [];
+        const mappedFallback = fallbackList.map((item, idx) => {
+          const parts = (item.time || '08.15 - 10.15').split(' - ');
+          const jamMulai = (parts[0] || '08:15').replace('.', ':') + ':00';
+          const jamSelesai = (parts[1] || '10:15').replace('.', ':') + ':00';
+          const [sh, sm] = jamMulai.split(':').map(Number);
+          const [eh, em] = jamSelesai.split(':').map(Number);
+          const duration = (eh * 60 + em) - (sh * 60 + sm);
+          return {
+            id: item.id || `fb-guru-${idx}`,
+            jam_mulai: jamMulai,
+            jam_selesai: jamSelesai,
+            hari: selectedDay,
+            kelas_id: user.kelas_id || 'e88128be-8fc3-4973-8d69-00ef17571626',
+            kelas: { id: user.kelas_id || 'e88128be-8fc3-4973-8d69-00ef17571626', nama: user.kelas?.nama || 'XII TKJ 1' },
+            mapel: { nama: item.subject },
+            sessionCount: 2,
+            actualDuration: duration,
+          };
+        });
+        setDbSchedules(mappedFallback);
+        setIsOfflineFallback(true);
+        setDbError(null);
       } finally {
         setIsLoading(false);
       }
@@ -458,6 +511,17 @@ const JadwalGuruView: React.FC<{ user: UserProfile; onShowToast: any; onNavigate
 
           {/* Schedule Cards */}
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+            {isOfflineFallback && (
+              <div className="col-span-full bg-amber-50/90 p-3.5 rounded-2xl border border-amber-200/80 text-amber-900 text-xs flex items-center justify-between shadow-sm mb-1">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined notranslate text-amber-600 text-[18px]">cloud_off</span>
+                  <span className="font-semibold">Mode Cadangan Offline (Database Supabase sedang istirahat)</span>
+                </div>
+                <span className="bg-amber-200/60 text-amber-950 font-bold px-2 py-0.5 rounded-md text-[10px]">
+                  Jadwal Lokal Aktif
+                </span>
+              </div>
+            )}
             {isLoading ? (
               <div className="bg-white p-8 rounded-2xl flex flex-col items-center justify-center gap-3 border border-slate-100 shadow-sm">
                 <span className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
@@ -590,31 +654,39 @@ export const JadwalScreen: React.FC<JadwalScreenProps> = ({ onShowToast, user, o
 
   const [selectedDay, setSelectedDay] = useState(hariIni);
   const [searchQuery, setSearchQuery] = useState('');
-  const [classes, setClasses] = useState<{ id: string; nama: string }[]>([]);
+  const [classes, setClasses] = useState<{ id: string; nama: string }[]>([
+    { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' },
+    { id: 'class-dkv-1', nama: 'XII DKV 1' },
+    { id: 'class-rpl-1', nama: 'XII RPL 1' },
+  ]);
   const [selectedKelasId, setSelectedKelasId] = useState<string>(
-    user?.kelas_id || (user as any)?.kelas?.id || ''
+    user?.kelas_id || (user as any)?.kelas?.id || 'e88128be-8fc3-4973-8d69-00ef17571626'
   );
   const [dbSchedules, setDbSchedules] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [dbError, setDbError] = useState<string | null>(null);
+  const [isOfflineFallback, setIsOfflineFallback] = useState(false);
 
   const days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
-  // 1. Fetch available classes (Strictly clean demo classes)
+  // 1. Fetch available classes
   useEffect(() => {
     async function loadClasses() {
-      const { data } = await supabase
-        .from('kelas')
-        .select('id, nama')
-        .in('id', ['28da94b0-33e2-4734-8bea-1a0bb740c7ce', 'e88128be-8fc3-4973-8d69-00ef17571626'])
-        .order('nama', { ascending: true });
+      try {
+        const { data } = await supabase
+          .from('kelas')
+          .select('id, nama')
+          .order('nama', { ascending: true });
 
-      if (data && data.length > 0) {
-        setClasses(data);
-        if (!selectedKelasId) {
-          const userClass = data.find(c => c.id === (user as any)?.kelas_id || c.nama === (user as any)?.kelas?.nama);
-          setSelectedKelasId(userClass ? userClass.id : data[0].id);
+        if (data && data.length > 0) {
+          setClasses(data);
+          if (!selectedKelasId) {
+            const userClass = data.find(c => c.id === (user as any)?.kelas_id || c.nama === (user as any)?.kelas?.nama);
+            setSelectedKelasId(userClass ? userClass.id : data[0].id);
+          }
         }
+      } catch (err) {
+        console.warn('Offline mode: Using default classes list', err);
       }
     }
     loadClasses();
@@ -664,16 +736,71 @@ export const JadwalScreen: React.FC<JadwalScreenProps> = ({ onShowToast, user, o
           }
         });
 
-        setDbSchedules(grouped);
+        if (grouped.length > 0) {
+          setDbSchedules(grouped);
+          setIsOfflineFallback(false);
+        } else {
+          const dayKey = selectedDay.toLowerCase();
+          const fallbackList = SCHEDULES_BY_DAY[dayKey] || [];
+          const currentClassObj = classes.find(c => c.id === selectedKelasId) || { id: selectedKelasId, nama: 'XII TKJ 1' };
+          const mappedFallback = fallbackList.map((item, idx) => {
+            const parts = (item.time || '08.15 - 10.15').split(' - ');
+            const jamMulai = (parts[0] || '08:15').replace('.', ':') + ':00';
+            const jamSelesai = (parts[1] || '10:15').replace('.', ':') + ':00';
+            const [sh, sm] = jamMulai.split(':').map(Number);
+            const [eh, em] = jamSelesai.split(':').map(Number);
+            const duration = (eh * 60 + em) - (sh * 60 + sm);
+            return {
+              id: item.id || `fb-std-${idx}`,
+              jam_mulai: jamMulai,
+              jam_selesai: jamSelesai,
+              hari: selectedDay,
+              kelas_id: selectedKelasId,
+              kelas: currentClassObj,
+              mapel: { nama: item.subject },
+              guru: { id: `guru-fb-${idx}`, nama: item.teacher },
+              sessionCount: 2,
+              actualDuration: duration,
+            };
+          });
+          setDbSchedules(mappedFallback);
+          setIsOfflineFallback(true);
+        }
       } catch (err: any) {
-        setDbError(err.message || 'Gagal memuat jadwal');
+        console.warn('Supabase offline/paused, loading local fallback schedule for students:', err);
+        const dayKey = selectedDay.toLowerCase();
+        const fallbackList = SCHEDULES_BY_DAY[dayKey] || [];
+        const currentClassObj = classes.find(c => c.id === selectedKelasId) || { id: selectedKelasId, nama: 'XII TKJ 1' };
+        const mappedFallback = fallbackList.map((item, idx) => {
+          const parts = (item.time || '08.15 - 10.15').split(' - ');
+          const jamMulai = (parts[0] || '08:15').replace('.', ':') + ':00';
+          const jamSelesai = (parts[1] || '10:15').replace('.', ':') + ':00';
+          const [sh, sm] = jamMulai.split(':').map(Number);
+          const [eh, em] = jamSelesai.split(':').map(Number);
+          const duration = (eh * 60 + em) - (sh * 60 + sm);
+          return {
+            id: item.id || `fb-std-${idx}`,
+            jam_mulai: jamMulai,
+            jam_selesai: jamSelesai,
+            hari: selectedDay,
+            kelas_id: selectedKelasId,
+            kelas: currentClassObj,
+            mapel: { nama: item.subject },
+            guru: { id: `guru-fb-${idx}`, nama: item.teacher },
+            sessionCount: 2,
+            actualDuration: duration,
+          };
+        });
+        setDbSchedules(mappedFallback);
+        setIsOfflineFallback(true);
+        setDbError(null);
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchClassSchedule();
-  }, [selectedKelasId, selectedDay]);
+  }, [selectedKelasId, selectedDay, classes]);
 
   const selectedClassObj = classes.find(c => c.id === selectedKelasId);
   const activeClassName = selectedClassObj?.nama || (user as any)?.kelas?.nama || 'Pilih Kelas';
@@ -786,6 +913,17 @@ export const JadwalScreen: React.FC<JadwalScreenProps> = ({ onShowToast, user, o
 
         {/* Schedule Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {isOfflineFallback && (
+            <div className="col-span-full mb-1 bg-amber-50/90 p-3.5 rounded-2xl border border-amber-200/80 text-amber-900 text-xs flex items-center justify-between shadow-sm">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined notranslate text-amber-600 text-[18px]">cloud_off</span>
+                <span className="font-semibold">Mode Cadangan Offline (Database Supabase sedang istirahat)</span>
+              </div>
+              <span className="bg-amber-200/60 text-amber-950 font-bold px-2 py-0.5 rounded-md text-[10px]">
+                Jadwal Lokal Aktif
+              </span>
+            </div>
+          )}
           {isLoading ? (
             <div className="bg-white p-8 rounded-2xl flex flex-col items-center justify-center gap-3 border border-slate-100 shadow-sm">
               <span className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />

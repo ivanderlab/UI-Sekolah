@@ -15,7 +15,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showRoleHelper, setShowRoleHelper] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,10 +23,24 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     setIsLoading(false);
   };
 
-  const selectDemoAccount = (u: string, p: string = 'Demo@2025') => {
-    setIdentifier(u);
-    setPassword(p);
-    setShowRoleHelper(false);
+  const handleQuickOperator = () => {
+    setIdentifier('TU');
+    setPassword('Demo@2025');
+  };
+
+  const handleQuickSuperadmin = () => {
+    setIdentifier('superadmin_sorong');
+    setPassword('Demo@2025');
+  };
+
+  const handleQuickGuru = () => {
+    setIdentifier('guru');
+    setPassword('Demo@2025');
+  };
+
+  const handleQuickSiswa = () => {
+    setIdentifier('siswa');
+    setPassword('Demo@2025');
   };
 
   return (
@@ -60,104 +73,42 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               Login ke Akun Anda
             </h2>
 
-            {/* Quick Fill Shortcuts for Admin TU, Super Admin & Wali Kelas */}
-            <div className="flex items-center gap-1 flex-wrap justify-end">
+            {/* Quick Fill Shortcuts for All Roles */}
+            <div className="flex items-center gap-1 flex-wrap justify-end max-w-[200px]">
               <button
                 type="button"
-                onClick={() => { setIdentifier('guru'); setPassword('Demo@2025'); }}
-                className="text-[10px] font-bold px-2 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100 transition active:scale-95 cursor-pointer shadow-xs"
-                title="Isi Akun Guru / Wali Kelas"
-              >
-                👨‍🏫 Wali
-              </button>
-              <button
-                type="button"
-                onClick={() => { setIdentifier('TU'); setPassword('Demo@2025'); }}
-                className="text-[10px] font-bold px-2 py-1 rounded-lg bg-sky-50 text-primary border border-sky-200 hover:bg-sky-100 transition active:scale-95 cursor-pointer"
+                onClick={handleQuickOperator}
+                className="text-[9px] font-bold px-2 py-1 rounded-lg bg-sky-50 text-primary border border-sky-200 hover:bg-sky-100 transition active:scale-95 cursor-pointer"
                 title="Isi Akun Tata Usaha (Admin TU)"
               >
                 🛠️ TU
               </button>
               <button
                 type="button"
-                onClick={() => { setIdentifier('superadmin_sorong'); setPassword('Demo@2025'); }}
-                className="text-[10px] font-bold px-2 py-1 rounded-lg bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 transition active:scale-95 cursor-pointer"
+                onClick={handleQuickSuperadmin}
+                className="text-[9px] font-bold px-2 py-1 rounded-lg bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100 transition active:scale-95 cursor-pointer"
                 title="Isi Akun Super Admin"
               >
                 👑 Super
               </button>
               <button
                 type="button"
-                onClick={() => setShowRoleHelper(!showRoleHelper)}
-                className="text-[10px] font-bold px-1.5 py-1 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition active:scale-95 cursor-pointer"
-                title="Pilih Akun Penilaian Lomba Lainnya"
+                onClick={handleQuickGuru}
+                className="text-[9px] font-bold px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition active:scale-95 cursor-pointer"
+                title="Isi Akun Guru Mapel & Wali Kelas"
               >
-                🎯
+                👨‍🏫 Guru
+              </button>
+              <button
+                type="button"
+                onClick={handleQuickSiswa}
+                className="text-[9px] font-bold px-2 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition active:scale-95 cursor-pointer"
+                title="Isi Akun Siswa"
+              >
+                🎓 Siswa
               </button>
             </div>
           </div>
-
-          {/* Demo Account Selector Drawer */}
-          {showRoleHelper && (
-            <div className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-2xl animate-in fade-in duration-200">
-              <p className="text-[11px] font-bold text-slate-600 mb-2">Pilih Peran Uji Coba Lomba:</p>
-              <div className="grid grid-cols-2 gap-1.5 text-left">
-                <button
-                  type="button"
-                  onClick={() => selectDemoAccount('superadmin_sorong')}
-                  className="col-span-2 p-2 rounded-xl bg-gradient-to-r from-purple-700 to-indigo-800 text-white text-[11px] font-bold text-left cursor-pointer transition hover:opacity-95 shadow-xs flex items-center justify-between"
-                >
-                  <span className="flex items-center gap-1.5">
-                    <span>👑</span>
-                    <span>Super Admin (Kepala Sekolah)</span>
-                  </span>
-                  <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-mono">superadmin_sorong</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => selectDemoAccount('tu')}
-                  className="p-1.5 rounded-lg bg-white border border-slate-200 hover:border-primary text-[11px] font-semibold text-slate-700 text-left cursor-pointer transition hover:bg-sky-50"
-                >
-                  🏢 Admin TU (`tu`)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => selectDemoAccount('budihartono')}
-                  className="p-1.5 rounded-lg bg-white border border-slate-200 hover:border-primary text-[11px] font-semibold text-slate-700 text-left cursor-pointer transition hover:bg-sky-50"
-                >
-                  👨‍🏫 Wali XII RPL 1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => selectDemoAccount('dewilestari')}
-                  className="p-1.5 rounded-lg bg-white border border-slate-200 hover:border-primary text-[11px] font-semibold text-slate-700 text-left cursor-pointer transition hover:bg-sky-50"
-                >
-                  👩‍🏫 Guru Mapel RPL
-                </button>
-                <button
-                  type="button"
-                  onClick={() => selectDemoAccount('iwansetiawan')}
-                  className="p-1.5 rounded-lg bg-white border border-slate-200 hover:border-primary text-[11px] font-semibold text-slate-700 text-left cursor-pointer transition hover:bg-sky-50"
-                >
-                  👨‍🏫 Wali XII TKJ 1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => selectDemoAccount('s0071234006')}
-                  className="p-1.5 rounded-lg bg-white border border-slate-200 hover:border-primary text-[11px] font-semibold text-slate-700 text-left cursor-pointer transition hover:bg-sky-50"
-                >
-                  📝 Sekretaris RPL
-                </button>
-                <button
-                  type="button"
-                  onClick={() => selectDemoAccount('s0071234001')}
-                  className="p-1.5 rounded-lg bg-white border border-slate-200 hover:border-primary text-[11px] font-semibold text-slate-700 text-left cursor-pointer transition hover:bg-sky-50"
-                >
-                  🎓 Siswa RPL 1
-                </button>
-              </div>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* Input Identifier */}
@@ -173,7 +124,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   type="text"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder="Contoh: tu / budihartono / s0071234001"
+                  placeholder="Contoh: TU / Nama Siswa / Guru"
                   className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:font-normal placeholder:text-slate-400"
                   required
                 />
@@ -193,15 +144,14 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Masukkan kata sandi akun"
+                  placeholder="Masukkan kata sandi"
                   className="w-full pl-10 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:font-normal placeholder:text-slate-400"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 p-1 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
-                  aria-label="Toggle password visibility"
+                  className="absolute right-3 p-1 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   <span className="material-symbols-outlined notranslate text-[20px]">
                     {showPassword ? 'visibility_off' : 'visibility'}
@@ -213,12 +163,12 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             <button
               type="submit"
               disabled={isLoading || !identifier || !password}
-              className="mt-2 w-full py-3.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-sm shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 cursor-pointer"
+              className="mt-2 w-full py-3.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-sm shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100"
             >
               {isLoading ? (
                 <>
                   <span className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-                  <span className="tracking-wide">Memverifikasi Sesi...</span>
+                  <span className="tracking-wide">Memeriksa Data...</span>
                 </>
               ) : (
                 <>
@@ -229,30 +179,29 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             </button>
           </form>
 
-          {/* Secure System Notice */}
-          <div className="mt-4 pt-3 border-t border-slate-100 text-center">
-            <p className="text-[11px] text-slate-500 flex items-center justify-center gap-1">
-              <span className="material-symbols-outlined text-[14px] text-emerald-600">verified_user</span>
-              <span>Terproteksi Supabase Auth &amp; Row Level Security</span>
+          {/* Role info snippet */}
+          <div className="mt-4 pt-3 border-t border-slate-100 text-center flex flex-col gap-1">
+            <p className="text-[11px] text-slate-500">
+              Admin TU: <strong className="text-primary font-mono">TU</strong> • Super: <strong className="text-purple-700 font-mono">superadmin_sorong</strong>
+            </p>
+            <p className="text-[11px] text-slate-500">
+              Guru: <strong className="text-emerald-700 font-mono">guru</strong> • Siswa: <strong className="text-amber-700 font-mono">siswa</strong> • sandi: <strong className="text-slate-700 font-mono">Demo@2025</strong>
             </p>
           </div>
         </div>
 
         <button
           onClick={onOpenPublicSchedule}
-          className="mt-6 py-2.5 px-5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs backdrop-blur-md transition-all active:scale-95 flex items-center gap-1.5 border border-white/20 animate-in slide-in-from-bottom-8 duration-700 delay-300 cursor-pointer"
+          className="mt-6 py-2.5 px-5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs backdrop-blur-md transition-all active:scale-95 flex items-center gap-1.5 border border-white/20 animate-in slide-in-from-bottom-8 duration-700 delay-300"
         >
           <span className="material-symbols-outlined notranslate text-[16px]">calendar_month</span>
-          <span>Lihat Jadwal Pelajaran Publik</span>
+          <span>Lihat Jadwal Publik Tanpa Login</span>
         </button>
       </div>
 
-      <div className="pb-6 text-center z-10 animate-in fade-in duration-1000 delay-500 max-w-md px-4">
-        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+      <div className="pb-6 text-center z-10 animate-in fade-in duration-1000 delay-500">
+        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">
           SIAKAD v2.0 • SMK Negeri 1 Sorong
-        </p>
-        <p className="text-[10px] text-slate-400 mt-1 font-medium leading-relaxed">
-          Karya Tim: <span className="text-slate-600 font-semibold">Andhika Ivander N.</span> (XII DKV 1) • <span className="text-slate-600 font-semibold">Rahmad Rizal F.</span> (XII TKJ 1) • <span className="text-slate-600 font-semibold">Prima Adi N. S.</span> (XII TKJ 1)
         </p>
       </div>
     </div>

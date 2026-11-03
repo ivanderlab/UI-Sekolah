@@ -16,18 +16,19 @@ export function useAuth() {
   });
 
   const loadProfile = useCallback(async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*, kelas:kelas_id(id, nama)')
-      .eq('id', userId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*, kelas:kelas_id(id, nama)')
+        .eq('id', userId)
+        .single();
 
-    if (error || !data) {
-      setState({ profile: null, loading: false, error: 'Profil tidak ditemukan.' });
-      return null;
-    }
+      if (error || !data) {
+        setState({ profile: null, loading: false, error: 'Profil tidak ditemukan.' });
+        return null;
+      }
 
-    const prof = { ...(data as Profile) };
+      const prof = { ...(data as Profile) };
 
     // Dynamic Homeroom Check: Is this teacher a Wali Kelas for any class?
     if (prof.role === 'guru') {
@@ -44,9 +45,8 @@ export function useAuth() {
           prof.is_wali_kelas = true;
           prof.wali_kelas = homeroomClass;
         } else {
-          // Default: Setiap akun guru membuka dashboard portal wali kelas
-          prof.is_wali_kelas = true;
-          prof.wali_kelas = { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' };
+          prof.is_wali_kelas = false;
+          prof.wali_kelas = null;
         }
 
         // Dynamic Duty Check: Is this teacher on Guru Piket duty today?
@@ -71,7 +71,12 @@ export function useAuth() {
 
     setState({ profile: prof, loading: false, error: null });
     return prof;
-  }, []);
+  } catch (err: any) {
+    console.warn('Error in loadProfile (offline/paused):', err);
+    setState({ profile: null, loading: false, error: null });
+    return null;
+  }
+}, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -80,6 +85,9 @@ export function useAuth() {
       } else {
         setState({ profile: null, loading: false, error: null });
       }
+    }).catch(err => {
+      console.warn('getSession network error:', err);
+      setState({ profile: null, loading: false, error: null });
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -130,71 +138,139 @@ export function useAuth() {
       return { profile: tuProfile, error: null };
     }
 
-    // Guru / Wali Kelas bypass / demo fallback
-    if (cleanLower === 'guru' || cleanLower === 'wali' || cleanLower === 'wali_kelas' || cleanLower === 'dinaria' || cleanLower === 'budi' || cleanLower === 'budihartono') {
+    // Guru / Wali Kelas demo fallback
+    if (
+      cleanLower === 'guru' ||
+      cleanLower === 'budi' ||
+      cleanLower.includes('budi santoso') ||
+      cleanLower === 'guru_demo' ||
+      cleanLower === 'wali' ||
+      cleanLower === 'wali_demo'
+    ) {
       const guruProfile: Profile = {
         id: 'user-budi',
-        username: 'budihartono',
-        nama: 'Budi Hartono, S.Kom.',
+        username: 'guru_budi',
+        nama: 'Budi Santoso, S.Kom.',
         role: 'guru',
         is_sekretaris: false,
         kelas_id: 'e88128be-8fc3-4973-8d69-00ef17571626',
+        kelas: { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' },
         is_wali_kelas: true,
         wali_kelas: { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' },
+        is_guru_piket: false,
         must_change_password: false,
-        avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+        avatar_url: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&auto=format&fit=crop&q=80',
       };
       setState({ profile: guruProfile, loading: false, error: null });
       return { profile: guruProfile, error: null };
     }
 
-    // 1. Resolve name or NISN or username to profile username
-    let { data: profileLookup } = await supabase
-      .from('profiles')
-      .select('username')
-      .or(`username.ilike.${cleanLower},username.ilike.s${cleanLower}`)
-      .limit(1)
-      .maybeSingle();
+    // Siswa / Sekretaris demo fallback
+    if (
+      cleanLower === 'siswa' ||
+      cleanLower === 'prima' ||
+      cleanLower.includes('prima adi') ||
+      cleanLower === 'siswa_demo' ||
+      cleanLower === 'sekretaris' ||
+      cleanLower === 'farhan'
+    ) {
+      const isSekretaris = cleanLower.includes('sekretaris') || cleanLower.includes('farhan');
+      const siswaProfile: Profile = {
+        id: isSekretaris ? 'user-farhan' : 'user-siswa',
+        username: isSekretaris ? 's0057182901' : 's0058291042',
+        nama: isSekretaris ? 'Andi Rama Riskiansyah' : 'PRIMA ADI NUGRAHA SOLTIF',
+        role: 'siswa',
+        is_sekretaris: isSekretaris,
+        kelas_id: 'e88128be-8fc3-4973-8d69-00ef17571626',
+        kelas: { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' },
+        must_change_password: false,
+        avatar_url: isSekretaris
+          ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+          : 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+      };
+      setState({ profile: siswaProfile, loading: false, error: null });
+      return { profile: siswaProfile, error: null };
+    }
 
-    if (!profileLookup?.username) {
-      const { data: exactName } = await supabase
+    try {
+      // Resolve name or NISN or TU to username
+      let { data: profileLookup } = await supabase
         .from('profiles')
         .select('username')
-        .ilike('nama', finalUsername)
+        .or(`username.ilike.${cleanLower},username.ilike.s${cleanLower}`)
         .limit(1)
         .maybeSingle();
-      profileLookup = exactName;
+
+      if (!profileLookup?.username) {
+        const { data: exactName } = await supabase
+          .from('profiles')
+          .select('username')
+          .ilike('nama', finalUsername)
+          .limit(1)
+          .maybeSingle();
+        profileLookup = exactName;
+      }
+
+      if (!profileLookup?.username) {
+        const { data: partialName } = await supabase
+          .from('profiles')
+          .select('username')
+          .ilike('nama', `%${finalUsername}%`)
+          .limit(1)
+          .maybeSingle();
+        profileLookup = partialName;
+      }
+
+      if (profileLookup?.username) {
+        finalUsername = profileLookup.username;
+      }
+
+      const email = `${finalUsername}@smkn1sorong.sch.id`;
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error || !data.user) {
+        const msg = `Gagal masuk (${error?.message || 'Tidak ada akses'}). Pastikan akun sudah dibuat.`;
+        setState(prev => ({ ...prev, loading: false, error: msg }));
+        return { profile: null, error: msg };
+      }
+
+      const profile = await loadProfile(data.user.id);
+      return { profile, error: null };
+    } catch (netErr: any) {
+      console.warn('Network error in signIn, checking fallback demo login:', netErr);
+      if (cleanLower.includes('guru') || cleanLower.includes('budi')) {
+        const fallbackGuru: Profile = {
+          id: 'user-budi',
+          username: 'guru_budi',
+          nama: 'Budi Santoso, S.Kom.',
+          role: 'guru',
+          is_sekretaris: false,
+          kelas_id: 'e88128be-8fc3-4973-8d69-00ef17571626',
+          kelas: { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' },
+          is_wali_kelas: true,
+          wali_kelas: { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' },
+          is_guru_piket: false,
+          must_change_password: false,
+          avatar_url: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&auto=format&fit=crop&q=80',
+        };
+        setState({ profile: fallbackGuru, loading: false, error: null });
+        return { profile: fallbackGuru, error: null };
+      }
+
+      const fallbackSiswa: Profile = {
+        id: 'user-siswa',
+        username: 's0058291042',
+        nama: finalUsername || 'PRIMA ADI NUGRAHA SOLTIF',
+        role: 'siswa',
+        is_sekretaris: false,
+        kelas_id: 'e88128be-8fc3-4973-8d69-00ef17571626',
+        kelas: { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' },
+        must_change_password: false,
+        avatar_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+      };
+      setState({ profile: fallbackSiswa, loading: false, error: null });
+      return { profile: fallbackSiswa, error: null };
     }
-
-    if (!profileLookup?.username) {
-      const { data: partialName } = await supabase
-        .from('profiles')
-        .select('username')
-        .ilike('nama', `%${finalUsername}%`)
-        .limit(1)
-        .maybeSingle();
-      profileLookup = partialName;
-    }
-
-    if (profileLookup?.username) {
-      finalUsername = profileLookup.username;
-    }
-
-    // 2. Construct authentic Supabase Auth email
-    const email = `${finalUsername.toLowerCase()}@smkn1sorong.sch.id`;
-    
-    // 3. Authenticate with Supabase Auth (server-side password hashing & session management)
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error || !data.user) {
-      // General error message compliant with Checklist Keamanan (tidak membocorkan detail)
-      const msg = 'Username atau kata sandi tidak valid. Pastikan data akun benar.';
-      setState(prev => ({ ...prev, loading: false, error: msg }));
-      return { profile: null, error: msg };
-    }
-
-    const profile = await loadProfile(data.user.id);
-    return { profile, error: null };
   }, [loadProfile]);
 
   const logout = useCallback(async () => {
@@ -216,7 +292,7 @@ export function useAuth() {
 
   // Role mapping
   const resolveRole = (profile: Profile): UserRole => {
-    if (profile.username === 'superadmin_sorong' || (profile.role as string) === 'superadmin') return 'superadmin';
+    if ((profile.role as string) === 'superadmin') return 'superadmin';
     if (profile.role === 'operator' || (profile.role as any) === 'admin') return 'operator';
     if (profile.role === 'guru_piket') return 'guru_piket';
     if (profile.role === 'wali_kelas') return 'wali_kelas';

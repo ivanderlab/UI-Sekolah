@@ -188,53 +188,57 @@ export default function App() {
     if (!targetKelasId) return;
 
     async function loadClassStudents() {
-      const { data: dbStudents } = await supabase
-        .from('profiles')
-        .select('id, nama, username')
-        .eq('kelas_id', targetKelasId)
-        .eq('role', 'siswa')
-        .order('nama', { ascending: true });
-
-      if (dbStudents && dbStudents.length > 0) {
-        const todayStr = new Date().toISOString().split('T')[0];
-        const { data: todayAbsen } = await supabase
-          .from('absen_harian')
-          .select('siswa_id, status, keterangan')
+      try {
+        const { data: dbStudents } = await supabase
+          .from('profiles')
+          .select('id, nama, username')
           .eq('kelas_id', targetKelasId)
-          .eq('tanggal', todayStr);
+          .eq('role', 'siswa')
+          .order('nama', { ascending: true });
 
-        const statusMap: Record<string, any> = {};
-        (todayAbsen || []).forEach((a: any) => {
-          const s = a.status === 'Hadir' ? 'H' : a.status === 'Sakit' ? 'S' : a.status === 'Izin' ? 'I' : a.status === 'Bolos' ? 'B' : 'A';
-          statusMap[a.siswa_id] = { status: s, note: a.keterangan };
-        });
+        if (dbStudents && dbStudents.length > 0) {
+          const todayStr = new Date().toISOString().split('T')[0];
+          const { data: todayAbsen } = await supabase
+            .from('absen_harian')
+            .select('siswa_id, status, keterangan')
+            .eq('kelas_id', targetKelasId)
+            .eq('tanggal', todayStr);
 
-        // Deduplicate students by name to guarantee exact unique list
-        const seenNames = new Set<string>();
-        const uniqueDbStudents = dbStudents.filter(s => {
-          const key = (s.nama || '').trim().toUpperCase();
-          if (seenNames.has(key)) return false;
-          seenNames.add(key);
-          return true;
-        });
+          const statusMap: Record<string, any> = {};
+          (todayAbsen || []).forEach((a: any) => {
+            const s = a.status === 'Hadir' ? 'H' : a.status === 'Sakit' ? 'S' : a.status === 'Izin' ? 'I' : a.status === 'Bolos' ? 'B' : 'A';
+            statusMap[a.siswa_id] = { status: s, note: a.keterangan };
+          });
 
-        const mapped: Student[] = uniqueDbStudents.map((s, idx) => {
-          const numStr = String(idx + 1).padStart(2, '0');
-          const existing = statusMap[s.id];
-          return {
-            id: s.id,
-            absentNo: numStr,
-            name: s.nama,
-            studentNo: numStr,
-            nisn: s.username.replace(/^s_?/, ''),
-            status: existing ? existing.status : 'H',
-            note: existing?.note || undefined,
-            avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(s.nama)}&background=005fa0&color=fff`,
-          };
-        });
+          // Deduplicate students by name to guarantee exact unique list
+          const seenNames = new Set<string>();
+          const uniqueDbStudents = dbStudents.filter(s => {
+            const key = (s.nama || '').trim().toUpperCase();
+            if (seenNames.has(key)) return false;
+            seenNames.add(key);
+            return true;
+          });
 
-        setOldStudents(mapped);
-        localStorage.setItem('smkn1_attendance_students_v2', JSON.stringify(mapped));
+          const mapped: Student[] = uniqueDbStudents.map((s, idx) => {
+            const numStr = String(idx + 1).padStart(2, '0');
+            const existing = statusMap[s.id];
+            return {
+              id: s.id,
+              absentNo: numStr,
+              name: s.nama,
+              studentNo: numStr,
+              nisn: s.username.replace(/^s_?/, ''),
+              status: existing ? existing.status : 'H',
+              note: existing?.note || undefined,
+              avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(s.nama)}&background=005fa0&color=fff`,
+            };
+          });
+
+          setOldStudents(mapped);
+          localStorage.setItem('smkn1_attendance_students_v2', JSON.stringify(mapped));
+        }
+      } catch (err) {
+        console.warn('Offline mode: Using cached students data', err);
       }
     }
 
