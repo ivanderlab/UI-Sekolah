@@ -8,6 +8,13 @@ dist-ssr
 .vercel
 .DS_Store
 *.log
+*.csv
+*.xlsx
+*.zip
+*.mp4
+*.cjs
+check-accounts.js
+test-*.js
 .wa-session/
 storage/
 *.session
