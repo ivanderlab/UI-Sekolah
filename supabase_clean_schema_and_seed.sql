@@ -119,6 +119,8 @@ CREATE TABLE IF NOT EXISTS public.jadwal (
   guru_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   mapel_id UUID NOT NULL REFERENCES public.mata_pelajaran(id) ON DELETE CASCADE,
   hari VARCHAR(20) NOT NULL,
+  jam_mulai TIME NOT NULL DEFAULT '07:15:00',
+  jam_selesai TIME NOT NULL DEFAULT '09:30:00',
   jam_ke_mulai INTEGER NOT NULL DEFAULT 1,
   jam_ke_selesai INTEGER NOT NULL DEFAULT 3,
   durasi_jp INTEGER GENERATED ALWAYS AS (jam_ke_selesai - jam_ke_mulai + 1) STORED,
@@ -126,7 +128,32 @@ CREATE TABLE IF NOT EXISTS public.jadwal (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 8. TABEL ABSEN SESI & STREAK SISWA
+-- 8. TABEL ABSEN HARIAN, ABSEN MAPEL, & ABSEN SESI
+CREATE TABLE IF NOT EXISTS public.absen_harian (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tanggal DATE NOT NULL DEFAULT CURRENT_DATE,
+  siswa_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  kelas_id UUID REFERENCES public.kelas(id) ON DELETE CASCADE,
+  status VARCHAR(20) NOT NULL DEFAULT 'Hadir',
+  status_validasi VARCHAR(20) DEFAULT 'draft',
+  keterangan TEXT,
+  diinput_oleh UUID REFERENCES public.profiles(id),
+  divalidasi_oleh UUID REFERENCES public.profiles(id),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(tanggal, siswa_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.absen_mapel (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  jadwal_id UUID NOT NULL REFERENCES public.jadwal(id) ON DELETE CASCADE,
+  tanggal DATE NOT NULL DEFAULT CURRENT_DATE,
+  siswa_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  status VARCHAR(20) NOT NULL DEFAULT 'Hadir',
+  keterangan TEXT,
+  diinput_oleh UUID REFERENCES public.profiles(id),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(tanggal, jadwal_id, siswa_id)
+);
 CREATE TABLE IF NOT EXISTS public.absen_sesi (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   jadwal_id UUID REFERENCES public.jadwal(id) ON DELETE CASCADE,

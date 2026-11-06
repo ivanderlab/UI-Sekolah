@@ -390,7 +390,7 @@ const JadwalGuruView: React.FC<{ user: UserProfile; onShowToast: any; onNavigate
             };
           });
           setDbSchedules(mappedFallback);
-          setIsOfflineFallback(true);
+          setIsOfflineFallback(false);
         }
       } catch (err: any) {
         console.warn('Supabase offline/paused, loading local fallback schedule for teacher:', err);
@@ -764,7 +764,7 @@ export const JadwalScreen: React.FC<JadwalScreenProps> = ({ onShowToast, user, o
             };
           });
           setDbSchedules(mappedFallback);
-          setIsOfflineFallback(true);
+          setIsOfflineFallback(false);
         }
       } catch (err: any) {
         console.warn('Supabase offline/paused, loading local fallback schedule for students:', err);
