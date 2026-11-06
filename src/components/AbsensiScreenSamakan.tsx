@@ -83,7 +83,7 @@ export const AbsensiScreen: React.FC<AbsensiScreenProps> = ({
       setIsReportSubmitted(true);
       onShowToast(
         'Laporan Berhasil Terkirim!',
-        'Data absensi mapel telah disinkronkan ke Wali Kelas (Dra. Hartini) dan Guru BK.',
+        'Data absensi mapel telah disinkronkan ke Wali Kelas (Ibu Siti Rahmawati, S.Pd.) dan Guru BK.',
         'success'
       );
     }, 1000);

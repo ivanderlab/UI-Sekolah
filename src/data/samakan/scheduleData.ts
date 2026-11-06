@@ -13,47 +13,47 @@ export const SCHEDULES_BY_DAY: Record<string, SubjectSchedule[]> = {
   senin: [
     {
       id: 'senin-1',
-      subject: 'Materi Kejuruan RPL',
+      subject: 'Administrasi Infrastruktur Jaringan',
       time: '08.15 - 11.50',
-      teacher: 'Budi Hartono, S.Kom.',
-      type: 'productive'
+      teacher: 'Ahmad Fauzi, M.T.',
+      type: 'productive',
     },
     {
       id: 'senin-2',
-      subject: 'Basis Data',
+      subject: 'Desain Komunikasi Visual & Motion',
       time: '11.50 - 13.25',
-      teacher: 'Dewi Lestari, S.Pd.',
-      type: 'productive'
+      teacher: 'Siti Rahmawati, S.Pd',
+      type: 'productive',
     },
     {
       id: 'senin-3',
-      subject: 'Pemrograman Web',
+      subject: 'Pemrograman Web & Basis Data',
       time: '13.25 - 14.45',
-      teacher: 'Iwan Setiawan, S.Kom.',
-      type: 'productive'
+      teacher: 'Budi Santoso, S.Kom',
+      type: 'productive',
     },
   ],
   selasa: [
     {
       id: 'selasa-1',
-      subject: 'PPKn',
+      subject: 'Pendidikan Pancasila & Kewarganegaraan',
       time: '08.15 - 09.35',
-      teacher: 'Siti Nurhaliza, M.Pd.',
-      type: 'general'
+      teacher: 'Rina Kurniawati, S.Pd',
+      type: 'general',
     },
     {
       id: 'selasa-2',
-      subject: 'Pemrograman Berorientasi Objek',
+      subject: 'Teknologi Layanan Jaringan (TKJ)',
       time: '09.35 - 12.30',
-      teacher: 'Budi Hartono, S.Kom.',
-      type: 'productive'
+      teacher: 'Ahmad Fauzi, M.T.',
+      type: 'productive',
     },
     {
       id: 'selasa-3',
-      subject: 'Basis Data Lanjut',
+      subject: 'Tipografi & Ilustrasi Digital (DKV)',
       time: '12.45 - 14.45',
-      teacher: 'Dewi Lestari, S.Pd.',
-      type: 'productive'
+      teacher: 'Dewi Lestari, S.Pd',
+      type: 'productive',
     },
   ],
   rabu: [
@@ -61,77 +61,77 @@ export const SCHEDULES_BY_DAY: Record<string, SubjectSchedule[]> = {
       id: 'rabu-1',
       subject: 'Bahasa Indonesia',
       time: '08.15 - 10.15',
-      teacher: 'Siti Nurhaliza, M.Pd.',
-      type: 'general'
+      teacher: 'Rina Kurniawati, S.Pd',
+      type: 'general',
     },
     {
       id: 'rabu-2',
-      subject: 'Bahasa Inggris',
+      subject: 'Bahasa Inggris Kejuruan',
       time: '10.30 - 12.30',
-      teacher: 'Dewi Lestari, S.Pd.',
-      type: 'general'
+      teacher: 'Maya Anggraini, S.Pd',
+      type: 'general',
     },
     {
       id: 'rabu-3',
       subject: 'Matematika Terapan',
       time: '12.45 - 14.45',
-      teacher: 'Budi Hartono, S.Kom.',
-      type: 'general'
+      teacher: 'Hendro Prasetyo, S.Kom',
+      type: 'general',
     },
   ],
   kamis: [
     {
       id: 'kamis-1',
-      subject: 'Pemrograman Perangkat Bergerak',
+      subject: 'Keamanan Jaringan & Cyber Security',
       time: '08.15 - 12.30',
-      teacher: 'Budi Hartono, S.Kom.',
-      type: 'productive'
+      teacher: 'Budi Santoso, S.Kom',
+      type: 'productive',
     },
     {
       id: 'kamis-2',
-      subject: 'Matematika Terapan',
+      subject: 'Produk Kreatif & Kewirausahaan (DKV/TKJ)',
       time: '12.45 - 14.45',
-      teacher: 'Iwan Setiawan, S.Kom.',
-      type: 'general'
+      teacher: 'Dewi Lestari, S.Pd',
+      type: 'productive',
     },
   ],
   jumat: [
     {
       id: 'jumat-1',
-      subject: 'Kejuruan Komputer & Jaringan',
+      subject: 'Praktikum Cloud Computing (TKJ)',
       time: '08.15 - 09.15',
-      teacher: 'Iwan Setiawan, S.Kom.',
-      type: 'productive'
+      teacher: 'Ahmad Fauzi, M.T.',
+      type: 'productive',
     },
     {
       id: 'jumat-2',
-      subject: 'Bahasa Indonesia',
+      subject: 'Fotografi & Videografi Editing (DKV)',
       time: '09.15 - 11.00',
-      teacher: 'Siti Nurhaliza, M.Pd.',
-      type: 'general'
+      teacher: 'Siti Rahmawati, S.Pd',
+      type: 'productive',
     },
   ],
   sabtu: [
     {
       id: 'sabtu-1',
-      subject: 'Bahasa Inggris Kejuruan',
+      subject: 'Pengembangan Portofolio Digital',
       time: '08.15 - 10.15',
-      teacher: 'Dewi Lestari, S.Pd.',
-      type: 'general'
+      teacher: 'Dewi Lestari, S.Pd',
+      type: 'productive',
     },
     {
       id: 'sabtu-2',
-      subject: 'Proyek Kreatif & Kewirausahaan',
+      subject: 'Troubleshooting Jaringan WAN',
       time: '10.30 - 11.50',
-      teacher: 'Budi Hartono, S.Kom.',
-      type: 'productive'
+      teacher: 'Budi Santoso, S.Kom',
+      type: 'productive',
     },
     {
       id: 'sabtu-3',
-      subject: 'Pengembangan Produk Perangkat Lunak',
+      subject: 'Evaluasi Projek Akhir Siswa',
       time: '12.05 - 13.25',
-      teacher: 'Budi Hartono, S.Kom.',
-      type: 'productive'
+      teacher: 'Ahmad Fauzi, M.T.',
+      type: 'productive',
     },
   ],
 };

@@ -97,8 +97,8 @@ export const PrintModal: React.FC<PrintModalProps> = ({
               <p>Mengetahui,</p>
               <p className="font-bold">Kepala SMKN 1 Sorong</p>
               <div className="h-12" />
-              <p className="font-bold underline">Drs. Fransiskus Kambu, M.M</p>
-              <p className="text-[10px] text-[#707882]">NIP. 19681120 199403 1 004</p>
+              <p className="font-bold underline">Dr. Ir. H. Hendra Setiawan, M.Pd</p>
+              <p className="text-[10px] text-[#707882]">NIP. 19720101 199803 1 002</p>
             </div>
             <div className="text-right">
               <p>Sorong, 9 Oktober 2026</p>

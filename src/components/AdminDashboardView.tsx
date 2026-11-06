@@ -18,7 +18,6 @@ import { ExportKehadiranModal } from './ExportKehadiranModal';
 import { ScheduleModal } from './ScheduleModal';
 import { PrintModal } from './PrintModal';
 import { NotificationsModal } from './NotificationsModal';
-import { WhatsAppGatewayView } from './admin/WhatsAppGatewayView';
 
 interface AdminDashboardViewProps {
   onOpenScheduleManager?: () => void;
@@ -121,34 +120,30 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
     setIsExportModalOpen(true);
   };
 
-  const dynamicTotal = students && students.length > 0 ? students.length : 20;
-  const dynamicPresent = students && students.length > 0 ? students.filter(s => s.status === 'Hadir').length : 18;
-  const dynamicSick = students && students.length > 0 ? students.filter(s => s.status === 'Sakit').length : 1;
-  const dynamicPermit = students && students.length > 0 ? students.filter(s => s.status === 'Izin').length : 1;
-  const dynamicAlfa = students && students.length > 0 ? students.filter(s => s.status === 'Alfa' || (s.status as any) === 'Bolos').length : 0;
-  const dynamicRate = dynamicTotal > 0 ? Number(((dynamicPresent / dynamicTotal) * 100).toFixed(1)) : 90.0;
-
   const stats = {
-    totalStudents: dynamicTotal,
-    totalClasses: 2,
-    attendanceRate: dynamicRate,
-    presentToday: dynamicPresent,
-    sickToday: dynamicSick,
-    permitToday: dynamicPermit,
-    unexcusedToday: dynamicAlfa,
-    totalTeachers: 4,
+    totalStudents: 1240,
+    totalClasses: 36,
+    attendanceRate: 96.8,
+    presentToday: 1200,
+    sickToday: 18,
+    permitToday: 12,
+    unexcusedToday: 10,
+    totalTeachers: 78,
   };
 
   const classSummaries = [
-    { id: '1', name: 'XII RPL 1', hadir: 9, sakit: 1, izin: 0, alfa: 0, status: 'Tervalidasi' },
-    { id: '2', name: 'XII TKJ 1', hadir: 9, sakit: 0, izin: 1, alfa: 0, status: 'Tervalidasi' },
+    { id: '1', name: 'XII TKJ 1', hadir: 32, sakit: 1, izin: 1, alfa: 0, status: 'Tervalidasi' },
+    { id: '2', name: 'XII RPL 1', hadir: 34, sakit: 2, izin: 0, alfa: 0, status: 'Tervalidasi' },
+    { id: '3', name: 'XII DKV 1', hadir: 31, sakit: 1, izin: 2, alfa: 1, status: 'Menunggu Validasi' },
+    { id: '4', name: 'XI TKJ 1', hadir: 35, sakit: 0, izin: 1, alfa: 0, status: 'Tervalidasi' },
+    { id: '5', name: 'X PPLG', hadir: 36, sakit: 0, izin: 0, alfa: 0, status: 'Tervalidasi' },
   ];
 
   const auditLogs = [
-    { id: 'log-1', time: '08:50 WIT', user: 'Budi Hartono, S.Kom.', action: 'Kunci Presensi Jam Kejuruan (XII RPL 1 - 9 Hadir)' },
-    { id: 'log-2', time: '08:15 WIT', user: 'Iwan Setiawan, S.Kom.', action: 'Verifikasi Presensi XII TKJ 1' },
-    { id: 'log-3', time: '07:30 WIT', user: 'Tata Usaha SMKN 1', action: 'Siarkan Pengumuman Asesmen Sekolah' },
-    { id: 'log-4', time: '07:00 WIT', user: 'Superadmin SIAP', action: 'Inisialisasi Sistem Presensi Lomba 2026' },
+    { id: 'log-1', time: '08:50 WIT', user: 'Budi Santoso, S.Kom', action: 'Kunci Presensi JP 1-3 (XII TKJ 1 - 32 Hadir)' },
+    { id: 'log-2', time: '08:15 WIT', user: 'Tata Usaha SMKN 1', action: 'Update Jadwal Rombel XII RPL 2' },
+    { id: 'log-3', time: '07:15 WIT', user: 'Sistem SIAP Server', action: 'Sinkronisasi Otomatis PostgreSQL Supabase (1.000 Jadwal Aktif)' },
+    { id: 'log-4', time: 'Kemarin', user: 'Superadmin IT', action: 'Backup Rutin Database & Snapshot Rombel' },
   ];
 
   // ─── QUICK EXCEL ACTIONS ───
@@ -512,22 +507,6 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
             >
               <span>⚙️</span>
               <span>Kebijakan Root</span>
-            </button>
-          )}
-
-          {/* Superadmin Exclusive Tabs: WhatsApp Gateway (QR Code) */}
-          {isSuperadmin && (
-            <button
-              type="button"
-              onClick={() => setActiveTab('whatsapp')}
-              className={`px-3 py-2 rounded-xl text-[11px] font-bold transition-all whitespace-nowrap flex items-center gap-1 cursor-pointer ${
-                activeTab === 'whatsapp'
-                  ? 'bg-[#075e54] text-white shadow-xs'
-                  : 'text-[#404751] hover:bg-[#f2f4f6]'
-              }`}
-            >
-              <span>📱</span>
-              <span>Integrasi WA (QR)</span>
             </button>
           )}
 
@@ -1097,13 +1076,6 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
         )}
 
         {/* ═══════════════════════════════════════════════════════════════════ */}
-        {/* TAB WHATSAPP GATEWAY (SUPERADMIN): QR CODE & LOG PANGGIL GURU     */}
-        {/* ═══════════════════════════════════════════════════════════════════ */}
-        {isSuperadmin && activeTab === 'whatsapp' && (
-          <WhatsAppGatewayView onShowFeedback={showFeedback} />
-        )}
-
-        {/* ═══════════════════════════════════════════════════════════════════ */}
         {/* TAB 5 (SUPERADMIN ONLY): KEAMANAN, AKUN & AUDIT LOG ROOT           */}
         {/* ═══════════════════════════════════════════════════════════════════ */}
         {isSuperadmin && activeTab === 'keamanan' && (
@@ -1235,7 +1207,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   required
                   value={teacherName}
                   onChange={(e) => setTeacherName(e.target.value)}
-                  placeholder="Contoh: Joana Josephine Sahuburua, S.T"
+                  placeholder="Contoh: Dewi Lestari, S.Pd"
                   className="w-full h-10 px-3 bg-[#f2f4f6] rounded-xl text-[12px] font-semibold text-[#191c1e] focus:bg-white focus:ring-2 focus:ring-purple-600 outline-hidden border border-transparent focus:border-purple-600"
                 />
               </div>
@@ -1404,20 +1376,19 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   className="w-full h-10 px-3 bg-[#f2f4f6] rounded-xl text-[12px] font-semibold text-[#191c1e] focus:bg-white focus:ring-2 focus:ring-purple-700 outline-hidden"
                 >
                   <optgroup label="Siswa">
-                    <option value="s0071234001 (Cindy Laura)">s0071234001 - Cindy Laura (XII RPL 1)</option>
-                    <option value="s0071234002 (Andhika Pratama)">s0071234002 - Andhika Pratama (XII RPL 1)</option>
-                    <option value="s0075678001 (Fajar Ramadhan)">s0075678001 - Fajar Ramadhan (XII TKJ 1)</option>
-                    <option value="s0075678002 (Siti Aisyah)">s0075678002 - Siti Aisyah (XII TKJ 1)</option>
+                    <option value="s0075120001 (Aditya Pratama)">s0075120001 - Aditya Pratama (XII TKJ 1)</option>
+                    <option value="s0075120002 (Farhan Maulana)">s0075120002 - Farhan Maulana (XII TKJ 1)</option>
+                    <option value="s0075120006 (Dimas Setiawan)">s0075120006 - Dimas Setiawan (XII DKV 1)</option>
+                    <option value="s0075120008 (Gita Lestari)">s0075120008 - Gita Lestari (XII DKV 1)</option>
                   </optgroup>
                   <optgroup label="Dewan Guru">
-                    <option value="198501152010011001 (Budi Hartono, S.Kom.)">198501152010011001 - Budi Hartono, S.Kom.</option>
-                    <option value="199003202015022002 (Dewi Lestari, S.Pd.)">199003202015022002 - Dewi Lestari, S.Pd.</option>
-                    <option value="198708142011011003 (Iwan Setiawan, S.Kom.)">198708142011011003 - Iwan Setiawan, S.Kom.</option>
-                    <option value="199211052016032004 (Siti Nurhaliza, M.Pd.)">199211052016032004 - Siti Nurhaliza, M.Pd.</option>
+                    <option value="198501012010011001 (Budi Santoso, S.Kom)">198501012010011001 - Budi Santoso, S.Kom</option>
+                    <option value="199003032014022003 (Dewi Lestari, S.Pd)">199003032014022003 - Dewi Lestari, S.Pd</option>
+                    <option value="199205052016022005 (Rina Kurniawati, S.Pd)">199205052016022005 - Rina Kurniawati, S.Pd</option>
                   </optgroup>
                   <optgroup label="Administrator & Operator">
-                    <option value="admin_demo (Tata Usaha SMKN 1)">admin_demo - Tata Usaha SMKN 1</option>
-                    <option value="superadmin_sorong (Kepala Sekolah)">superadmin_sorong - Kepala Sekolah</option>
+                    <option value="admin_demo (Tata Usaha)">admin_demo - Staf Tata Usaha</option>
+                    <option value="superadmin_demo (Kepala Sekolah)">superadmin_demo - Kepala Sekolah</option>
                   </optgroup>
                 </select>
               </div>

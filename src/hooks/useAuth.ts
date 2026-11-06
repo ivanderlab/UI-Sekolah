@@ -177,8 +177,8 @@ export function useAuth() {
       const isSekretaris = cleanLower.includes('sekretaris') || cleanLower.includes('farhan');
       const siswaProfile: Profile = {
         id: isSekretaris ? 'user-farhan' : 'user-siswa',
-        username: isSekretaris ? 's0057182901' : 's0058291042',
-        nama: isSekretaris ? 'Andi Rama Riskiansyah' : 'PRIMA ADI NUGRAHA SOLTIF',
+        username: isSekretaris ? 's0075120002' : 's0075120001',
+        nama: isSekretaris ? 'Farhan Maulana' : 'Aditya Pratama',
         role: 'siswa',
         is_sekretaris: isSekretaris,
         kelas_id: 'e88128be-8fc3-4973-8d69-00ef17571626',
@@ -259,8 +259,8 @@ export function useAuth() {
 
       const fallbackSiswa: Profile = {
         id: 'user-siswa',
-        username: 's0058291042',
-        nama: finalUsername || 'PRIMA ADI NUGRAHA SOLTIF',
+        username: 's0075120001',
+        nama: finalUsername || 'Aditya Pratama',
         role: 'siswa',
         is_sekretaris: false,
         kelas_id: 'e88128be-8fc3-4973-8d69-00ef17571626',

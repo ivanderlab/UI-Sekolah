@@ -33,8 +33,8 @@ export const TODAY_SCHEDULE: TimetablePeriod[] = [
     timeRange: '14.00 - 15.30 WIT',
     subject: 'Produk Kreatif & Kewirausahaan',
     code: 'PKK-201',
-    teacher: 'Dra. Endang Sulistyowati',
-    room: 'RUANG-XI-RPL-1',
+    teacher: 'Dewi Lestari, S.Pd',
+    room: 'RUANG-XII-TKJ-1',
     status: 'upcoming',
   },
 ];
