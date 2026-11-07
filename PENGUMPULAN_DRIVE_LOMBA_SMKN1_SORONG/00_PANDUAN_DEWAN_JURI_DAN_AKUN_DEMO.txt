@@ -1,0 +1,79 @@
+================================================================================
+🎓 BERKAS PENILAIAN RESMI: LOMBA APLIKASI WEB BERBANTUAN AI (2026)
+   SMK NEGERI 1 SORONG · PAPUA BARAT DAYA
+   Aplikasi: SIAKAD v2.0 (Presensi Terpadu & Academic Hub Berbasis Web)
+================================================================================
+
+Kepada Yang Terhormat,
+Dewan Juri Lomba Perancangan & Pengembangan Aplikasi Berbasis Web Berbantuan AI
+
+Salam hormat dan salam sejahtera.
+Folder Google Drive ini memuat seluruh kelengkapan berkas proyek yang telah kami 
+susun secara rapi, sistematis, dan terverifikasi 100% sesuai dengan kualifikasi 
+penilaian lomba (Lengkap 6 Poin Persyaratan Dewan Juri dalam 1 Folder Bersih).
+
+--------------------------------------------------------------------------------
+📌 RINGKASAN DATA TIM PENGEMBANG (SMK NEGERI 1 SORONG)
+--------------------------------------------------------------------------------
+1. Andhika Ivander Nathanael   | Kelas XII DKV 1 | UI/UX Designer & Frontend Engineer
+2. RAHMAD RIZAL FADILAH       | Kelas XII TKJ 1 | Fullstack & Database Architect
+3. PRIMA ADI NUGRAHA SOLTIF   | Kelas XII TKJ 1 | WhatsApp Gateway & Integration Specialist
+
+--------------------------------------------------------------------------------
+🚀 AKSES CEPAT APLIKASI LIVE & REPOSITORI
+--------------------------------------------------------------------------------
+🌐 Aplikasi Live (Vercel): 
+   https://absensi-gabungan-main.vercel.app
+
+💻 Repositori Resmi GitHub: 
+   https://github.com/ivanderlab/UI-Sekolah
+
+🔑 AKUN PENGUJIAN INSTAN DEWAN JURI (Single Password: Demo@2025):
+   Pada halaman login, Dewan Juri cukup mengklik tombol jalan pintas (Quick Fill):
+   - [👑 Super]   -> Super Admin / Kepala Sekolah (Audit sistem & integrasi WhatsApp)
+   - [🛠️ TU]     -> Operator Tata Usaha (Broadcast agenda & Ekspor rekap Excel 12 Kelas)
+   - [👨‍🏫 Guru]   -> Wali Kelas & Guru Mapel (Pak Budi Santoso / Bu Dewi Lestari)
+   - [🎓 Siswa]   -> Siswa & Sekretaris Kelas (Farhan Maulana - XII TKJ 1)
+   * Jadwal Publik: Bebas diakses tanpa login melalui tombol "Lihat Jadwal Publik".
+
+================================================================================
+📁 STRUKTUR FILE LENGKAP PENILAIAN JURI (1 FOLDER MANDIRI & TERSTRUKTUR)
+================================================================================
+
+00_PANDUAN_DEWAN_JURI_DAN_AKUN_DEMO.txt
+   Informasi umum pengujian, tautan resmi aplikasi, dan daftar akun uji coba juri.
+
+01_DATA_TIM_PENGEMBANG.pdf
+   Dokumen resmi kualifikasi profil 3 anggota tim pengembang SMKN 1 Sorong.
+01_Foto_Andhika_Ivander_Nathanael.jpeg
+   Foto profil resmi Ketua Tim / UI Designer (Andhika Ivander Nathanael).
+01_Foto_Rahmad_Rizal_Fadilah.jpeg
+   Foto profil resmi Fullstack Engineer (Rahmad Rizal Fadilah).
+01_Foto_Prima_Adi_Nugraha_Soltif.jpeg
+   Foto profil resmi Integration Engineer (Prima Adi Nugraha Soltif).
+
+02_WORKFLOW_7_LANGKAH_PENGEMBANGAN.pdf
+   Dokumen wajib metodologi 7 tahapan rekayasa perangkat lunak berbantuan AI.
+
+03_PANDUAN_UJI_COBA_DEWAN_JURI.pdf
+   Panduan langkah demi langkah 7 layer pengujian aplikasi untuk dewan juri.
+03_Buka_Aplikasi_Live_Vercel.url
+   Shortcut Windows: Klik 2x langsung membuka aplikasi di browser Anda.
+03_Buka_Repositori_GitHub.url
+   Shortcut Windows: Klik 2x langsung membuka repositori GitHub resmi.
+
+04_VIDEO_PENJELASAN_SIAKAD_SMKN1_SORONG.mp4
+   Video presentasi berdurasi 04:12 (Aman di bawah batas maksimal 5 menit juri) 
+   berkualitas Full HD 1080p dengan voiceover AI dan kartu identitas tim.
+
+05_POSTER_INFOGRAFIS_LOMBA.png
+   Poster infografis resmi lomba resolusi tinggi (1.4 MB) yang merangkum 
+   latar belakang masalah, 3 solusi utama, dan dampak efisiensi sistem presensi.
+
+06_DOKUMENTASI_DAN_KEBERMANFAATAN_PROJEK.pdf
+   Naskah akademik penjelasan kebermanfaatan, efisiensi waktu roll-call, 
+   dan arsitektur zero-collision 12 kelas SMKN 1 Sorong.
+
+================================================================================
+🏆 SMKN 1 SORONG · BISA HEBAT · SIAP KERJA · SANTUN MANDIRI KREATIF
+================================================================================

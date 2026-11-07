@@ -12,6 +12,7 @@ dist-ssr
 *.xlsx
 *.zip
 *.mp4
+!PENGUMPULAN_DRIVE_LOMBA_SMKN1_SORONG/*.mp4
 *.cjs
 check-accounts.js
 test-*.js
