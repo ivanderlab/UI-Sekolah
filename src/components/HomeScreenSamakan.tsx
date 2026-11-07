@@ -438,6 +438,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ( {
   const [showRekapModal, setShowRekapModal] = useState(false);
   const [showBanner, setShowBanner] = useState(teacherAlert.isActive);
   const [showPanggilGuruModal, setShowPanggilGuruModal] = useState(false);
+  const [showAllInModal, setShowAllInModal] = useState(false);
   const [localStudents, setLocalStudents] = useState<StudentAttendance[]>(students);
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -1163,37 +1164,115 @@ export const HomeScreen: React.FC<HomeScreenProps> = ( {
               </button>
             </div>
 
-            {/* Student Checklist Excerpt */}
-            <div className="flex flex-col gap-2">
-              <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">
-                Siswa Tidak Hadir Hari Ini
+            {/* Status Validasi Badge */}
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-xs font-bold text-slate-700">Status Validasi Kelas</span>
+              </div>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                ✅ Tervalidasi Wali Kelas
               </span>
+            </div>
 
-              {localStudents
-                .filter((s) => s.morningStatus !== 'hadir')
-                .map((std) => (
+            {/* Tab switch: Tidak Hadir vs Semua Siswa */}
+            <div className="flex items-center p-1 rounded-xl bg-slate-100">
+              <button
+                type="button"
+                onClick={() => setShowAllInModal(false)}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  !showAllInModal ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                Tidak Hadir ({localStudents.filter((s) => s.morningStatus !== 'hadir').length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowAllInModal(true)}
+                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                  showAllInModal ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                }`}
+              >
+                Semua Siswa ({localStudents.length})
+              </button>
+            </div>
+
+            {!showAllInModal ? (
+              <div className="flex flex-col gap-2">
+                {localStudents.filter((s) => s.morningStatus !== 'hadir').length === 0 ? (
+                  <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm shadow-emerald-200">
+                      <span className="material-symbols-outlined notranslate text-[22px]">verified</span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-xs text-emerald-950">Nihil Ketidakhadiran</h4>
+                      <p className="text-[11px] text-emerald-700 mt-0.5 leading-snug">
+                        Seluruh {localStudents.length} siswa tercatat <strong>Hadir</strong> lengkap hari ini. Tidak ada siswa sakit, izin, atau alfa.
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  localStudents
+                    .filter((s) => s.morningStatus !== 'hadir')
+                    .map((std) => (
+                      <div
+                        key={std.id}
+                        className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between"
+                      >
+                        <div className="flex flex-col">
+                          <span className="font-bold text-xs text-slate-900">
+                            {std.studentNo} - {std.name}
+                          </span>
+                          <span className="text-[11px] text-slate-500">{std.note || '-'}</span>
+                        </div>
+                        <span
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase ${
+                            std.morningStatus === 'sakit'
+                              ? 'bg-amber-100 text-amber-800'
+                              : std.morningStatus === 'izin'
+                              ? 'bg-sky-100 text-sky-800'
+                              : 'bg-red-100 text-red-800'
+                          }`}
+                        >
+                          {std.morningStatus}
+                        </span>
+                      </div>
+                    ))
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-1.5 max-h-[320px] overflow-y-auto pr-1">
+                {localStudents.map((std) => (
                   <div
                     key={std.id}
-                    className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between"
+                    className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between hover:bg-slate-100 transition-colors"
                   >
-                    <div className="flex flex-col">
-                      <span className="font-bold text-xs text-slate-900">
-                        {std.studentNo} - {std.name}
-                      </span>
-                      <span className="text-[11px] text-slate-500">{std.note || '-'}</span>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full bg-primary/10 text-primary font-bold text-xs flex items-center justify-center shrink-0">
+                        {std.studentNo}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-xs text-slate-800 truncate max-w-[170px]">{std.name}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">{std.nisn || '007512...'}</span>
+                      </div>
                     </div>
                     <span
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase ${
-                        std.morningStatus === 'sakit'
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase ${
+                        std.morningStatus === 'hadir'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : std.morningStatus === 'sakit'
                           ? 'bg-amber-100 text-amber-800'
-                          : 'bg-sky-100 text-sky-800'
+                          : std.morningStatus === 'izin'
+                          ? 'bg-sky-100 text-sky-800'
+                          : 'bg-red-100 text-red-800'
                       }`}
                     >
                       {std.morningStatus}
                     </span>
                   </div>
                 ))}
-            </div>
+              </div>
+            )}
 
 
           </div>
