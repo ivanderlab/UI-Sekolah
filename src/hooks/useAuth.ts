@@ -149,6 +149,15 @@ export function useAuth() {
     let finalUsername = identifier.trim();
     const cleanLower = finalUsername.toLowerCase();
 
+    // Strict Password Validation for Demo Accounts
+    const demoKeywords = ['superadmin', 'superadmin_sorong', 'kepsek', 'tu', 'admin_demo', 'admin', 'operator', 'guru', 'budi', 'guru_demo', 'wali', 'wali_demo', 'guru_dkv', 'dewi', 'siswa', 'siswa_demo', 'farhan', 'sekretaris', 'aditya'];
+    const isDemoKeyword = demoKeywords.some(k => cleanLower === k || cleanLower.includes(k));
+    if (isDemoKeyword && password !== 'Demo@2025') {
+      const errorMsg = 'Kata sandi salah. Harap gunakan sandi resmi (Demo: Demo@2025).';
+      setState(prev => ({ ...prev, loading: false, error: errorMsg }));
+      return { profile: null, error: errorMsg };
+    }
+
     // Superadmin bypass / demo root with real Supabase UUID
     if (cleanLower === 'superadmin' || cleanLower === 'superadmin_sorong' || cleanLower === 'kepsek') {
       const superProfile: Profile = {
@@ -318,6 +327,11 @@ export function useAuth() {
       return { profile, error: null };
     } catch (netErr: any) {
       console.warn('Network error in signIn, checking fallback demo login:', netErr);
+      if (password !== 'Demo@2025') {
+        const errorMsg = 'Kata sandi salah. Silakan periksa kembali.';
+        setState(prev => ({ ...prev, loading: false, error: errorMsg }));
+        return { profile: null, error: errorMsg };
+      }
       if (cleanLower.includes('guru') || cleanLower.includes('budi')) {
         const fallbackGuru: Profile = {
           id: 'aaaaaaaa-0003-0003-0003-aaaaaaaaaaaa',

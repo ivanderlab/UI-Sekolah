@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { SCHEDULES_BY_DAY } from "../data/samakan/scheduleData";
 import { UserProfile, StudentAttendance, ClassAttendanceSummary, TeacherCallAlert, NotificationItem } from '../types';
 import { NOTIFICATIONS } from '../data/adminMockData';
@@ -549,6 +549,31 @@ export const HomeScreen: React.FC<HomeScreenProps> = ( {
   const [izinName, setIzinName] = useState(user.name || 'Siswa');
   const [izinType, setIzinType] = useState<'sakit' | 'izin'>('sakit');
   const [izinReason, setIzinReason] = useState('Demam dan flu (disertai surat dokter)');
+  const [izinFile, setIzinFile] = useState<{ name: string; size: string; dataUrl: string } | null>(null);
+  const [isUploadingIzin, setIsUploadingIzin] = useState(false);
+  const izinFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleIzinFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      onShowToast('Ukuran File Terlalu Besar', 'Maksimal ukuran foto / dokumen adalah 5MB', 'warning');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const dataUrl = evt.target?.result as string;
+      setIzinFile({
+        name: file.name,
+        size: `${(file.size / 1024).toFixed(1)} KB`,
+        dataUrl,
+      });
+      onShowToast('Berkas Terlampir 📎', `Foto ${file.name} berhasil dimuat.`, 'info');
+    };
+    reader.readAsDataURL(file);
+  };
   const [lastCallTime, setLastCallTime] = useState<number>(0);
 
   useEffect(() => {
@@ -634,14 +659,56 @@ export const HomeScreen: React.FC<HomeScreenProps> = ( {
     );
   };
 
-  const handleSaveIzin = (e: React.FormEvent) => {
+  const handleSaveIzin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setShowIzinModal(false);
-    onShowToast(
-      'Pengajuan Disimpan',
-      `Surat ${izinType.toUpperCase()} atas nama ${izinName} berhasil diunggah ke arsip kelas.`,
-      'success'
-    );
+    setIsUploadingIzin(true);
+
+    try {
+      const dateObj = currentTime || new Date();
+      const todayStr = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
+      const kelasId = user.kelas_id || 'e88128be-8fc3-4973-8d69-00ef17571626';
+
+      // 1. Record to Supabase absen_harian
+      await supabase.from('absen_harian').upsert({
+        tanggal: todayStr,
+        siswa_id: user.id,
+        kelas_id: kelasId,
+        status: izinType === 'sakit' ? 'Sakit' : 'Izin',
+        status_validasi: 'draft',
+        catatan: izinReason,
+        diinput_oleh: user.id,
+      }, { onConflict: 'tanggal,siswa_id' }).catch(err => console.warn('Supabase absen_harian upsert warning:', err));
+
+      // 2. Persist local record
+      const submission = {
+        id: `izin-${Date.now()}`,
+        studentId: user.id,
+        studentName: izinName,
+        type: izinType,
+        reason: izinReason,
+        fileName: izinFile?.name || (izinType === 'sakit' ? 'Surat_Dokter.jpg' : 'Surat_Tugas.pdf'),
+        dataUrl: izinFile?.dataUrl || '',
+        submittedAt: new Date().toISOString(),
+        status: 'menunggu_verifikasi',
+      };
+      const existing = JSON.parse(localStorage.getItem('smkn1_submitted_izin_docs') || '[]');
+      existing.unshift(submission);
+      localStorage.setItem('smkn1_submitted_izin_docs', JSON.stringify(existing));
+
+      // 3. Update local state
+      setLocalStudents(prev => prev.map(s => s.id === user.id || s.name.toLowerCase() === user.name.toLowerCase() ? { ...s, morningStatus: izinType } : s));
+
+      setShowIzinModal(false);
+      onShowToast(
+        'Pengajuan Berhasil Dikirim! 📨',
+        `Surat ${izinType.toUpperCase()} (${izinFile?.name || 'Berkas Terlampir'}) atas nama ${izinName} berhasil diunggah ke antrean verifikasi Wali Kelas.`,
+        'success'
+      );
+    } catch (err: any) {
+      onShowToast('Gagal Mengunggah', err.message || 'Terjadi gangguan jaringan', 'warning');
+    } finally {
+      setIsUploadingIzin(false);
+    }
   };
 
   return (
@@ -1212,18 +1279,60 @@ export const HomeScreen: React.FC<HomeScreenProps> = ( {
                 />
               </div>
 
-              {/* Upload photo attachment simulation */}
-              <div className="border-2 border-dashed border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center text-center bg-slate-50">
-                <span className="material-symbols-outlined notranslate text-primary text-[28px]">
-                  photo_camera
-                </span>
-                <span className="text-xs font-bold text-slate-700 mt-1">
-                  Foto Surat Dokter / Surat Tugas
-                </span>
-                <span className="text-[11px] text-slate-400">
-                  Format JPG/PNG (Otomatis tervalidasi AI Kesiswaan)
-                </span>
-              </div>
+              {/* Interactive File & Photo Upload Dropzone */}
+              <input
+                type="file"
+                ref={izinFileInputRef}
+                accept="image/*,.pdf"
+                className="hidden"
+                onChange={handleIzinFileSelect}
+              />
+
+              {izinFile ? (
+                <div className="border border-emerald-300 bg-emerald-50/90 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-xs">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    {izinFile.dataUrl.startsWith('data:image') ? (
+                      <img
+                        src={izinFile.dataUrl}
+                        alt="Preview"
+                        className="w-12 h-12 rounded-xl object-cover border border-emerald-300 shrink-0 shadow-xs"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-xl bg-emerald-200 text-emerald-800 flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined notranslate">description</span>
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-emerald-950 truncate">{izinFile.name}</p>
+                      <p className="text-[10px] text-emerald-700 font-semibold">{izinFile.size} • Siap Dikirim</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setIzinFile(null); if (izinFileInputRef.current) izinFileInputRef.current.value = ''; }}
+                    className="p-1.5 px-2.5 rounded-lg bg-emerald-200 hover:bg-emerald-300 text-emerald-900 text-[11px] font-bold transition active:scale-95 cursor-pointer"
+                  >
+                    Ganti
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onClick={() => izinFileInputRef.current?.click()}
+                  className="border-2 border-dashed border-sky-300 hover:border-primary rounded-2xl p-4 flex flex-col items-center justify-center text-center bg-sky-50/50 hover:bg-sky-50 transition cursor-pointer active:scale-[0.99] group"
+                >
+                  <div className="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-1 group-hover:scale-110 transition-transform">
+                    <span className="material-symbols-outlined notranslate text-[24px]">
+                      photo_camera
+                    </span>
+                  </div>
+                  <span className="text-xs font-bold text-slate-800">
+                    Ketuk untuk Mengunggah / Ambil Foto
+                  </span>
+                  <span className="text-[11px] text-slate-500 mt-0.5">
+                    Foto Surat Dokter / Surat Dispensasi (JPG, PNG, PDF maks 5MB)
+                  </span>
+                </div>
+              )}
 
               <button
                 type="submit"
