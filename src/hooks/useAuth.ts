@@ -79,14 +79,47 @@ export function useAuth() {
 }, []);
 
   useEffect(() => {
+    // 1. Initial check: restore active profile from localStorage if exists
+    const savedActive = localStorage.getItem('smkn1_active_user_profile');
+    if (savedActive) {
+      try {
+        const parsed = JSON.parse(savedActive);
+        if (parsed && parsed.id) {
+          setState({ profile: parsed, loading: false, error: null });
+        }
+      } catch (e) {
+        console.warn('Failed to parse saved active profile:', e);
+      }
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         loadProfile(session.user.id);
       } else {
+        const saved = localStorage.getItem('smkn1_active_user_profile');
+        if (saved) {
+          try {
+            const p = JSON.parse(saved);
+            if (p && p.id) {
+              setState({ profile: p, loading: false, error: null });
+              return;
+            }
+          } catch {}
+        }
         setState({ profile: null, loading: false, error: null });
       }
     }).catch(err => {
       console.warn('getSession network error:', err);
+      const saved = localStorage.getItem('smkn1_active_user_profile');
+      if (saved) {
+        try {
+          const p = JSON.parse(saved);
+          if (p && p.id) {
+            setState({ profile: p, loading: false, error: null });
+            return;
+          }
+        } catch {}
+      }
       setState({ profile: null, loading: false, error: null });
     });
 
@@ -94,6 +127,16 @@ export function useAuth() {
       if (session?.user) {
         loadProfile(session.user.id);
       } else {
+        const saved = localStorage.getItem('smkn1_active_user_profile');
+        if (saved) {
+          try {
+            const p = JSON.parse(saved);
+            if (p && p.id) {
+              setState({ profile: p, loading: false, error: null });
+              return;
+            }
+          } catch {}
+        }
         setState({ profile: null, loading: false, error: null });
       }
     });
@@ -277,7 +320,7 @@ export function useAuth() {
       console.warn('Network error in signIn, checking fallback demo login:', netErr);
       if (cleanLower.includes('guru') || cleanLower.includes('budi')) {
         const fallbackGuru: Profile = {
-          id: 'user-budi',
+          id: 'aaaaaaaa-0003-0003-0003-aaaaaaaaaaaa',
           username: 'guru_budi',
           nama: 'Budi Santoso, S.Kom.',
           role: 'guru',
@@ -290,12 +333,13 @@ export function useAuth() {
           must_change_password: false,
           avatar_url: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&auto=format&fit=crop&q=80',
         };
+        localStorage.setItem('smkn1_active_user_profile', JSON.stringify(fallbackGuru));
         setState({ profile: fallbackGuru, loading: false, error: null });
         return { profile: fallbackGuru, error: null };
       }
 
       const fallbackSiswa: Profile = {
-        id: 'user-siswa',
+        id: 'aaaaaaaa-0006-0006-0006-aaaaaaaaaaaa',
         username: 's0075120001',
         nama: finalUsername || 'Aditya Pratama',
         role: 'siswa',
@@ -305,13 +349,15 @@ export function useAuth() {
         must_change_password: false,
         avatar_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
       };
+      localStorage.setItem('smkn1_active_user_profile', JSON.stringify(fallbackSiswa));
       setState({ profile: fallbackSiswa, loading: false, error: null });
       return { profile: fallbackSiswa, error: null };
     }
   }, [loadProfile]);
 
   const logout = useCallback(async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem('smkn1_active_user_profile');
+    await supabase.auth.signOut().catch(() => {});
     setState({ profile: null, loading: false, error: null });
   }, []);
 

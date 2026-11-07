@@ -4,7 +4,7 @@ export const SCHOOL_LOGO = '/logo-smk.png';
 
 export const USER_PROFILES: Record<string, UserProfile> = {
   sekretaris: {
-    id: 'user-farhan',
+    id: 'aaaaaaaa-0005-0005-0005-aaaaaaaaaaaa',
     name: 'Farhan Maulana',
     role: 'sekretaris',
     roleTitle: 'Sekretaris Kelas • XII TKJ 1',
@@ -18,7 +18,7 @@ export const USER_PROFILES: Record<string, UserProfile> = {
     streakDays: 12,
   },
   siswa: {
-    id: 'user-siswa',
+    id: 'aaaaaaaa-0006-0006-0006-aaaaaaaaaaaa',
     name: 'Aditya Pratama',
     role: 'siswa',
     roleTitle: 'Siswa • XII TKJ 1',
@@ -34,7 +34,7 @@ export const USER_PROFILES: Record<string, UserProfile> = {
     streakDays: 15,
   },
   guru: {
-    id: 'user-budi',
+    id: 'aaaaaaaa-0003-0003-0003-aaaaaaaaaaaa',
     name: 'Budi Santoso, S.Kom.',
     role: 'guru',
     roleTitle: 'Guru Produktif TKJ',
@@ -50,7 +50,7 @@ export const USER_PROFILES: Record<string, UserProfile> = {
     streakDays: 45,
   },
   operator: {
-    id: 'user-admin',
+    id: 'aaaaaaaa-0002-0002-0002-aaaaaaaaaaaa',
     name: 'Admin Kurikulum & Dapodik',
     role: 'operator',
     roleTitle: 'Administrator Utama Sistem',
@@ -64,7 +64,7 @@ export const USER_PROFILES: Record<string, UserProfile> = {
     streakDays: 30,
   },
   admin: {
-    id: 'user-admin-tu',
+    id: 'aaaaaaaa-0002-0002-0002-aaaaaaaaaaaa',
     name: 'Staf Tata Usaha (TU)',
     role: 'operator',
     roleTitle: 'Tata Usaha / Operator',
