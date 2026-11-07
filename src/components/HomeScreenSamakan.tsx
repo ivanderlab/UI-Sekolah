@@ -669,15 +669,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ( {
       const kelasId = user.kelas_id || 'e88128be-8fc3-4973-8d69-00ef17571626';
 
       // 1. Record to Supabase absen_harian
-      await supabase.from('absen_harian').upsert({
-        tanggal: todayStr,
-        siswa_id: user.id,
-        kelas_id: kelasId,
-        status: izinType === 'sakit' ? 'Sakit' : 'Izin',
-        status_validasi: 'draft',
-        catatan: izinReason,
-        diinput_oleh: user.id,
-      }, { onConflict: 'tanggal,siswa_id' }).catch(err => console.warn('Supabase absen_harian upsert warning:', err));
+      try {
+        await supabase.from('absen_harian').upsert({
+          tanggal: todayStr,
+          siswa_id: user.id,
+          kelas_id: kelasId,
+          status: izinType === 'sakit' ? 'Sakit' : 'Izin',
+          status_validasi: 'draft',
+          catatan: izinReason,
+          diinput_oleh: user.id,
+        }, { onConflict: 'tanggal,siswa_id' });
+      } catch (dbErr) {
+        console.warn('Supabase absen_harian upsert warning:', dbErr);
+      }
 
       // 2. Persist local record
       const submission = {
