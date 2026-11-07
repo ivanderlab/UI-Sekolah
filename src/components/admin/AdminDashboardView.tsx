@@ -97,15 +97,14 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
     'XII RPL 1', 'XII TKJ 1'
   ]);
 
-  // Sync available classes from Supabase for assigning Wali Kelas (Strictly Demo Classes)
+  // Sync all 12 TKJ & DKV classes dynamically from Supabase
   useEffect(() => {
     async function loadSchoolClasses() {
       try {
         const { data } = await supabase
           .from('kelas')
           .select('id, nama')
-          .in('id', ['28da94b0-33e2-4734-8bea-1a0bb740c7ce', 'e88128be-8fc3-4973-8d69-00ef17571626'])
-          .order('nama');
+          .order('nama', { ascending: true });
         if (data && data.length > 0) {
           setAvailableClassesList(data.map((c) => c.nama));
         }
@@ -139,19 +138,38 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
 
   const stats = {
     totalStudents: dynamicTotal,
-    totalClasses: 2,
+    totalClasses: availableClassesList.length || 12,
     attendanceRate: dynamicRate,
     presentToday: dynamicPresent,
     sickToday: dynamicSick,
     permitToday: dynamicPermit,
     unexcusedToday: dynamicAlfa,
-    totalTeachers: 4,
+    totalTeachers: teachers.length || 4,
   };
 
-  const classSummaries = [
-    { id: '1', name: 'XII RPL 1', hadir: 9, sakit: 1, izin: 0, alfa: 0, status: 'Tervalidasi' },
-    { id: '2', name: 'XII TKJ 1', hadir: 9, sakit: 0, izin: 1, alfa: 0, status: 'Tervalidasi' },
-  ];
+  const classSummaries = React.useMemo(() => {
+    const list = availableClassesList.length > 0 ? availableClassesList : [
+      'X TKJ 1', 'X TKJ 2', 'X DKV 1', 'X DKV 2',
+      'XI TKJ 1', 'XI TKJ 2', 'XI DKV 1', 'XI DKV 2',
+      'XII TKJ 1', 'XII TKJ 2', 'XII DKV 1', 'XII DKV 2'
+    ];
+    return list.map((cName, idx) => {
+      const clsStudents = students.filter(s => s.kelas === cName);
+      const h = clsStudents.filter(s => s.status === 'Hadir').length;
+      const s = clsStudents.filter(s => s.status === 'Sakit').length;
+      const i = clsStudents.filter(s => s.status === 'Izin').length;
+      const a = clsStudents.filter(s => s.status === 'Alfa').length;
+      return {
+        id: String(idx + 1),
+        name: cName,
+        hadir: clsStudents.length > 0 ? h : 5,
+        sakit: clsStudents.length > 0 ? s : (idx % 5 === 2 ? 1 : 0),
+        izin: clsStudents.length > 0 ? i : (idx % 6 === 3 ? 1 : 0),
+        alfa: clsStudents.length > 0 ? a : 0,
+        status: 'Tervalidasi',
+      };
+    });
+  }, [availableClassesList, students]);
 
   const auditLogs = [
     { id: 'log-1', time: '08:50 WIT', user: 'Budi Hartono, S.Kom.', action: 'Kunci Presensi Jam Kejuruan (XII RPL 1 - 9 Hadir)' },

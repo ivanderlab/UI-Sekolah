@@ -64,12 +64,11 @@ export const GuruPiketDashboard: React.FC<GuruPiketDashboardProps> = ({
     async function loadPiketData() {
       setLoading(true);
       try {
-        // Fetch demo classes
+        // Fetch all 12 TKJ & DKV classes
         const { data: clsData } = await supabase
           .from('kelas')
           .select('id, nama')
-          .in('id', ['28da94b0-33e2-4734-8bea-1a0bb740c7ce', 'e88128be-8fc3-4973-8d69-00ef17571626'])
-          .order('nama');
+          .order('nama', { ascending: true });
         
         // Fetch today's harian attendance to check validation status and late entries
         const { data: harianRows } = await supabase

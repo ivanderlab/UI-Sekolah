@@ -48,14 +48,13 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
   const [isLoadingClassSchedule, setIsLoadingClassSchedule] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Sync all demo classes dynamically from Supabase
+  // Sync all 12 TKJ & DKV classes dynamically from Supabase
   useEffect(() => {
     async function loadAllClasses() {
       try {
         const { data } = await supabase
           .from('kelas')
           .select('id, nama')
-          .in('id', ['28da94b0-33e2-4734-8bea-1a0bb740c7ce', 'e88128be-8fc3-4973-8d69-00ef17571626'])
           .order('nama', { ascending: true });
         if (data && data.length > 0) {
           setClassList(data.map((k) => k.nama));
@@ -82,7 +81,6 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
             mapel:mapel_id(nama),
             guru:guru_id(nama)
           `)
-          .in('kelas_id', ['28da94b0-33e2-4734-8bea-1a0bb740c7ce', 'e88128be-8fc3-4973-8d69-00ef17571626'])
           .eq('kelas.nama', selectedClass)
           .order('jam_mulai', { ascending: true });
 

@@ -132,7 +132,7 @@ export const ValidasiGuruScreen: React.FC<ValidasiGuruScreenProps> = ({
           const { data: fallbackRows } = await supabase
             .from('jadwal')
             .select('id, kelas_id, jam_mulai, jam_selesai, hari, ruang, kelas:kelas_id(id, nama), mapel:mapel_id(nama)')
-            .eq('guru_id', '255f8ecb-5b46-48db-8bb9-448d571fefcc'); // Budi Hartono, S.Kom.
+            .eq('guru_id', 'aaaaaaaa-0003-0003-0003-aaaaaaaaaaaa'); // Budi Santoso, S.Kom.
           scheduleRows = fallbackRows;
         }
 

@@ -106,11 +106,11 @@ export function useAuth() {
     let finalUsername = identifier.trim();
     const cleanLower = finalUsername.toLowerCase();
 
-    // Superadmin bypass / demo root fallback
+    // Superadmin bypass / demo root with real Supabase UUID
     if (cleanLower === 'superadmin' || cleanLower === 'superadmin_sorong' || cleanLower === 'kepsek') {
       const superProfile: Profile = {
-        id: 'superadmin-root-0',
-        username: 'superadmin_sorong',
+        id: 'aaaaaaaa-0001-0001-0001-aaaaaaaaaaaa',
+        username: 'superadmin_demo',
         nama: 'Superadmin SIAP (Kepala Sekolah)',
         role: 'superadmin' as any,
         is_sekretaris: false,
@@ -118,27 +118,29 @@ export function useAuth() {
         must_change_password: false,
         avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
       };
+      localStorage.setItem('smkn1_active_user_profile', JSON.stringify(superProfile));
       setState({ profile: superProfile, loading: false, error: null });
       return { profile: superProfile, error: null };
     }
 
-    // Admin TU bypass / demo fallback
-    if (cleanLower === 'tu' || cleanLower === 'admin_demo' || cleanLower === 'admin') {
+    // Admin TU bypass / demo fallback with real Supabase UUID
+    if (cleanLower === 'tu' || cleanLower === 'admin_demo' || cleanLower === 'admin' || cleanLower === 'operator') {
       const tuProfile: Profile = {
-        id: 'admin-tu-root-0',
-        username: 'admin_demo',
-        nama: 'Administrator SMKN 1 (Tata Usaha)',
+        id: 'aaaaaaaa-0002-0002-0002-aaaaaaaaaaaa',
+        username: 'tu_demo',
+        nama: 'Staf Tata Usaha (Operator)',
         role: 'operator' as any,
         is_sekretaris: false,
         kelas_id: null,
         must_change_password: false,
         avatar_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
       };
+      localStorage.setItem('smkn1_active_user_profile', JSON.stringify(tuProfile));
       setState({ profile: tuProfile, loading: false, error: null });
       return { profile: tuProfile, error: null };
     }
 
-    // Guru / Wali Kelas demo fallback
+    // Guru Mapel & Wali Kelas demo with real Supabase UUID
     if (
       cleanLower === 'guru' ||
       cleanLower === 'budi' ||
@@ -148,8 +150,8 @@ export function useAuth() {
       cleanLower === 'wali_demo'
     ) {
       const guruProfile: Profile = {
-        id: 'user-budi',
-        username: 'guru_budi',
+        id: 'aaaaaaaa-0003-0003-0003-aaaaaaaaaaaa',
+        username: 'guru_demo',
         nama: 'Budi Santoso, S.Kom.',
         role: 'guru',
         is_sekretaris: false,
@@ -161,35 +163,70 @@ export function useAuth() {
         must_change_password: false,
         avatar_url: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150&auto=format&fit=crop&q=80',
       };
+      localStorage.setItem('smkn1_active_user_profile', JSON.stringify(guruProfile));
       setState({ profile: guruProfile, loading: false, error: null });
       return { profile: guruProfile, error: null };
     }
 
-    // Siswa / Sekretaris demo fallback
+    // Guru DKV (Dewi Lestari)
+    if (cleanLower === 'guru_dkv' || cleanLower === 'dewi' || cleanLower.includes('dewi lestari')) {
+      const guruDkvProfile: Profile = {
+        id: 'aaaaaaaa-0004-0004-0004-aaaaaaaaaaaa',
+        username: 'guru_dkv',
+        nama: 'Dewi Lestari, S.Pd',
+        role: 'guru',
+        is_sekretaris: false,
+        kelas_id: '11111111-0012-0002-0001-000000000011',
+        kelas: { id: '11111111-0012-0002-0001-000000000011', nama: 'XII DKV 1' },
+        is_wali_kelas: true,
+        wali_kelas: { id: '11111111-0012-0002-0001-000000000011', nama: 'XII DKV 1' },
+        is_guru_piket: false,
+        must_change_password: false,
+        avatar_url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+      };
+      localStorage.setItem('smkn1_active_user_profile', JSON.stringify(guruDkvProfile));
+      setState({ profile: guruDkvProfile, loading: false, error: null });
+      return { profile: guruDkvProfile, error: null };
+    }
+
+    // Siswa / Sekretaris demo with real Supabase UUID
     if (
       cleanLower === 'siswa' ||
-      cleanLower === 'prima' ||
-      cleanLower.includes('prima adi') ||
       cleanLower === 'siswa_demo' ||
-      cleanLower === 'sekretaris' ||
-      cleanLower === 'farhan'
+      cleanLower === 'farhan' ||
+      cleanLower === 'sekretaris'
     ) {
-      const isSekretaris = cleanLower.includes('sekretaris') || cleanLower.includes('farhan');
       const siswaProfile: Profile = {
-        id: isSekretaris ? 'user-farhan' : 'user-siswa',
-        username: isSekretaris ? 's0075120002' : 's0075120001',
-        nama: isSekretaris ? 'Farhan Maulana' : 'Aditya Pratama',
+        id: 'aaaaaaaa-0005-0005-0005-aaaaaaaaaaaa',
+        username: 'siswa_demo',
+        nama: 'Farhan Maulana',
         role: 'siswa',
-        is_sekretaris: isSekretaris,
+        is_sekretaris: true,
         kelas_id: 'e88128be-8fc3-4973-8d69-00ef17571626',
         kelas: { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' },
         must_change_password: false,
-        avatar_url: isSekretaris
-          ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-          : 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+        avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
       };
+      localStorage.setItem('smkn1_active_user_profile', JSON.stringify(siswaProfile));
       setState({ profile: siswaProfile, loading: false, error: null });
       return { profile: siswaProfile, error: null };
+    }
+
+    if (cleanLower === 'aditya' || cleanLower === 'aditya_demo') {
+      const adityaProfile: Profile = {
+        id: 'aaaaaaaa-0006-0006-0006-aaaaaaaaaaaa',
+        username: 'aditya_demo',
+        nama: 'Aditya Pratama',
+        role: 'siswa',
+        is_sekretaris: false,
+        kelas_id: 'e88128be-8fc3-4973-8d69-00ef17571626',
+        kelas: { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' },
+        must_change_password: false,
+        avatar_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+      };
+      localStorage.setItem('smkn1_active_user_profile', JSON.stringify(adityaProfile));
+      setState({ profile: adityaProfile, loading: false, error: null });
+      return { profile: adityaProfile, error: null };
     }
 
     try {
