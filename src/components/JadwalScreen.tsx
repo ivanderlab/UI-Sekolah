@@ -834,15 +834,23 @@ export const JadwalScreen: React.FC<JadwalScreenProps> = ({ onShowToast, user, o
           </div>
         </div>
 
-        {/* Fixed Class Display */}
-        <div className="bg-white/15 w-full py-2.5 rounded-xl text-white text-sm font-semibold backdrop-blur-sm flex items-center justify-between px-4 mt-2">
-          <span className="flex items-center gap-2">
+        {/* Dynamic Class Selector */}
+        <div className="bg-white/15 w-full py-2 px-3 rounded-xl text-white text-sm font-semibold backdrop-blur-sm flex items-center justify-between mt-2">
+          <div className="flex items-center gap-2 flex-1">
             <span className="material-symbols-outlined notranslate text-[18px]">school</span>
-            Kelas {activeClassName}
-          </span>
-          <span className="text-[11px] bg-white/20 px-2.5 py-0.5 rounded-full text-white font-bold flex items-center gap-1 shadow-xs">
+            <select
+              value={selectedKelasId}
+              onChange={(e) => setSelectedKelasId(e.target.value)}
+              className="bg-transparent text-white font-bold text-sm outline-none cursor-pointer border-none py-0.5 focus:ring-0 [&>option]:text-slate-800"
+            >
+              {classes.map((c) => (
+                <option key={c.id} value={c.id}>Kelas {c.nama}</option>
+              ))}
+            </select>
+          </div>
+          <span className="text-[11px] bg-white/20 px-2.5 py-0.5 rounded-full text-white font-bold flex items-center gap-1 shadow-xs shrink-0">
             <span className="material-symbols-outlined notranslate text-[13px]">verified</span>
-            Siswa Aktif
+            Live Database
           </span>
         </div>
       </div>

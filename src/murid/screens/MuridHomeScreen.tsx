@@ -414,7 +414,7 @@ export const MuridHomeScreen: React.FC<MuridHomeScreenProps> = ({
         initialRoomName={activeSession?.ruang || 'Lab Komputer 2'}
         studentName={user.name || 'Cindy Laura'}
         onSuccess={(msg) => {
-          onShowToast('Panggilan Terkirim! 📲', msg, 'success');
+          onShowToast?.('Panggilan Terkirim! 📲', msg, 'success');
         }}
       />
     </div>

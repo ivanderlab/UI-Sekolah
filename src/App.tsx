@@ -508,7 +508,7 @@ export default function App() {
                   readOnly={!wewenangPengabsen.canInputAttendance}
                   officerInfo={{
                     canInput: wewenangPengabsen.canInputAttendance,
-                    officerRole: wewenangPengabsen.officerRole,
+                    officerRole: (wewenangPengabsen.officerRole === 'sekretaris_2' ? 'sekretaris' : wewenangPengabsen.officerRole) as any,
                     title: wewenangPengabsen.officerTitle,
                     name: wewenangPengabsen.activeOfficerName,
                     reason: wewenangPengabsen.officerReason,

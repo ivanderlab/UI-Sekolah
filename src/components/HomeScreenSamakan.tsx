@@ -445,73 +445,77 @@ export const HomeScreen: React.FC<HomeScreenProps> = ( {
 
   useEffect(() => {
     async function fetchSummary() {
-      const kelasId = user.kelas_id || (user as any).kelas?.id || 'e88128be-8fc3-4973-8d69-00ef17571626';
-      const dateObj = currentTime || new Date();
-      const todayStr = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
+      try {
+        const kelasId = user.kelas_id || (user as any).kelas?.id || 'e88128be-8fc3-4973-8d69-00ef17571626';
+        const dateObj = currentTime || new Date();
+        const todayStr = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
 
-      // 1. Get total students in class
-      const { count: totalCount } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('kelas_id', kelasId);
-      const totalSiswa = totalCount || 37;
-
-      // 2. Check absen_harian for today
-      const { data: harianData } = await supabase
-        .from('absen_harian')
-        .select('status')
-        .eq('kelas_id', kelasId)
-        .eq('tanggal', todayStr);
-
-      let h = 0, s = 0, i = 0, a = 0;
-
-      if (harianData && harianData.length > 0) {
-        harianData.forEach(r => {
-          if (r.status === 'Hadir' || r.status === 'Terlambat') h++;
-          else if (r.status === 'Sakit') s++;
-          else if (r.status === 'Izin') i++;
-          else if (r.status === 'Alfa' || r.status === 'Bolos') a++;
-        });
-      } else {
-        // Fallback: check absen_mapel for today
-        const { data: classJadwal } = await supabase
-          .from('jadwal')
-          .select('id')
+        // 1. Get total students in class
+        const { count: totalCount } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
           .eq('kelas_id', kelasId);
-        
-        const jadwalIds = (classJadwal || []).map(j => j.id);
+        const totalSiswa = totalCount || 37;
 
-        if (jadwalIds.length > 0) {
-          const { data: mapelData } = await supabase
-            .from('absen_mapel')
-            .select('status, siswa_id')
-            .in('jadwal_id', jadwalIds)
-            .eq('tanggal', todayStr);
+        // 2. Check absen_harian for today
+        const { data: harianData } = await supabase
+          .from('absen_harian')
+          .select('status')
+          .eq('kelas_id', kelasId)
+          .eq('tanggal', todayStr);
 
-          if (mapelData && mapelData.length > 0) {
-            const studentStatusMap: Record<string, string> = {};
-            mapelData.forEach((r: any) => {
-              studentStatusMap[r.siswa_id] = r.status;
-            });
-            Object.values(studentStatusMap).forEach((status: string) => {
-              if (status === 'Hadir' || status === 'Terlambat') h++;
-              else if (status === 'Sakit') s++;
-              else if (status === 'Izin') i++;
-              else if (status === 'Alfa' || status === 'Bolos') a++;
-            });
+        let h = 0, s = 0, i = 0, a = 0;
+
+        if (harianData && harianData.length > 0) {
+          harianData.forEach(r => {
+            if (r.status === 'Hadir' || r.status === 'Terlambat') h++;
+            else if (r.status === 'Sakit') s++;
+            else if (r.status === 'Izin') i++;
+            else if (r.status === 'Alfa' || r.status === 'Bolos') a++;
+          });
+        } else {
+          // Fallback: check absen_mapel for today
+          const { data: classJadwal } = await supabase
+            .from('jadwal')
+            .select('id')
+            .eq('kelas_id', kelasId);
+          
+          const jadwalIds = (classJadwal || []).map(j => j.id);
+
+          if (jadwalIds.length > 0) {
+            const { data: mapelData } = await supabase
+              .from('absen_mapel')
+              .select('status, siswa_id')
+              .in('jadwal_id', jadwalIds)
+              .eq('tanggal', todayStr);
+
+            if (mapelData && mapelData.length > 0) {
+              const studentStatusMap: Record<string, string> = {};
+              mapelData.forEach((r: any) => {
+                studentStatusMap[r.siswa_id] = r.status;
+              });
+              Object.values(studentStatusMap).forEach((status: string) => {
+                if (status === 'Hadir' || status === 'Terlambat') h++;
+                else if (status === 'Sakit') s++;
+                else if (status === 'Izin') i++;
+                else if (status === 'Alfa' || status === 'Bolos') a++;
+              });
+            }
           }
         }
-      }
 
-      setDynamicSummary({
-        className: (user as any).kelas?.nama || 'XII TKJ 1',
-        totalStudents: totalSiswa,
-        present: h,
-        sick: s,
-        permitted: i,
-        unexcused: a,
-        validationStatus: harianData && harianData.length > 0 ? 'tervalidasi' : 'menunggu_acc'
-      });
+        setDynamicSummary({
+          className: (user as any).kelas?.nama || 'XII TKJ 1',
+          totalStudents: totalSiswa,
+          present: h,
+          sick: s,
+          permitted: i,
+          unexcused: a,
+          validationStatus: harianData && harianData.length > 0 ? 'tervalidasi' : 'menunggu_acc'
+        });
+      } catch (summaryErr) {
+        console.warn('Error fetching attendance summary:', summaryErr);
+      }
     }
 
     fetchSummary();

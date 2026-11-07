@@ -80,14 +80,10 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
   useEffect(() => {
     async function loadMasterData() {
       try {
-        const DEMO_CLASS_IDS = ['28da94b0-33e2-4734-8bea-1a0bb740c7ce', 'e88128be-8fc3-4973-8d69-00ef17571626'];
-        const DEMO_TEACHERS = ['budihartono', 'dewilestari', 'iwansetiawan', 'sitinurhaliza'];
-
-        // Classes (Strictly Clean Demo Classes)
+        // Classes (All TKJ & DKV classes)
         const { data: clsData } = await supabase
           .from('kelas')
           .select('id, nama, wali_kelas_id')
-          .in('id', DEMO_CLASS_IDS)
           .order('nama', { ascending: true });
         if (clsData) {
           setClasses(clsData);
@@ -102,18 +98,17 @@ export const OperatorDashboard: React.FC<OperatorDashboardProps> = ({
           setSelectedWaliMap(wMap);
         }
 
-        // Teachers (Strictly Clean Demo Teachers)
+        // Teachers (All registered teachers)
         const { data: tchData } = await supabase
           .from('profiles')
           .select('id, nama, username')
           .eq('role', 'guru')
-          .in('username', DEMO_TEACHERS)
           .order('nama', { ascending: true });
         if (tchData) setTeachers(tchData);
 
-        // Subjects (mapel)
+        // Subjects (mata_pelajaran)
         const { data: mplData } = await supabase
-          .from('mapel')
+          .from('mata_pelajaran')
           .select('id, nama')
           .order('nama', { ascending: true });
         if (mplData) setSubjects(mplData);

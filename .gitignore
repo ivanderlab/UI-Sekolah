@@ -18,3 +18,5 @@ test-*.js
 .wa-session/
 storage/
 *.session
+*.sql
+fix_sql.js

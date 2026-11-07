@@ -57,21 +57,17 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ session, onLogout, onS
 
     async function loadSupabaseData() {
       try {
-        const DEMO_CLASS_IDS = ['28da94b0-33e2-4734-8bea-1a0bb740c7ce', 'e88128be-8fc3-4973-8d69-00ef17571626'];
-        const DEMO_TEACHERS = ['budihartono', 'dewilestari', 'iwansetiawan', 'sitinurhaliza'];
-
-        // 1. Fetch Teachers (Strictly Clean Demo Teachers)
+        // 1. Fetch Teachers (All registered teachers)
         const { data: dbTeachers } = await supabase
           .from('profiles')
           .select('id, nama, username')
           .eq('role', 'guru')
-          .in('username', DEMO_TEACHERS)
           .order('nama', { ascending: true });
 
         const { data: dbClasses } = await supabase
           .from('kelas')
           .select('id, nama, wali_kelas_id')
-          .in('id', DEMO_CLASS_IDS);
+          .order('nama', { ascending: true });
 
         if (active && dbTeachers && dbTeachers.length > 0) {
           const mappedTeachers: Teacher[] = dbTeachers.map((t, idx) => {
@@ -90,12 +86,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ session, onLogout, onS
           setTeachers(mappedTeachers);
         }
 
-        // 2. Fetch Students (Strictly Demo Classes XII RPL 1 & XII TKJ 1)
+        // 2. Fetch Students (All registered students)
         const { data: dbStudents } = await supabase
           .from('profiles')
           .select('id, nama, username, kelas:kelas_id(nama)')
           .eq('role', 'siswa')
-          .in('kelas_id', DEMO_CLASS_IDS)
           .order('nama', { ascending: true });
 
         if (active && dbStudents && dbStudents.length > 0) {
@@ -113,7 +108,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ session, onLogout, onS
           setStudents(mappedStudents);
         }
 
-        // 3. Fetch Schedules (Strictly Demo Classes XII RPL 1 & XII TKJ 1)
+        // 3. Fetch Schedules (All registered classes)
         const { data: dbJadwal } = await supabase
           .from('jadwal')
           .select(`
@@ -122,7 +117,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ session, onLogout, onS
             mapel:mapel_id(nama),
             guru:guru_id(nama)
           `)
-          .in('kelas_id', DEMO_CLASS_IDS)
           .order('jam_mulai', { ascending: true });
 
         if (active && dbJadwal && dbJadwal.length > 0) {

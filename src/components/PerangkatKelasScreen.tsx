@@ -35,16 +35,13 @@ export const PerangkatKelasScreen: React.FC<PerangkatKelasScreenProps> = ({
   const [pickerModalRole, setPickerModalRole] = useState<'ketua' | 'sekretaris1' | 'sekretaris2' | null>(null);
   const [pickerSearch, setPickerSearch] = useState<string>('');
 
-  const DEMO_CLASS_IDS = ['28da94b0-33e2-4734-8bea-1a0bb740c7ce', 'e88128be-8fc3-4973-8d69-00ef17571626'];
-
-  // 1. Fetch Class List
+  // 1. Fetch Class List (All TKJ & DKV classes)
   useEffect(() => {
     async function fetchClasses() {
       try {
         const { data: allCls } = await supabase
           .from('kelas')
           .select('id, nama, wali_kelas_id')
-          .in('id', DEMO_CLASS_IDS)
           .order('nama', { ascending: true });
 
         if (allCls && allCls.length > 0) {
