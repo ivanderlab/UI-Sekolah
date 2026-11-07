@@ -5,6 +5,7 @@ import {
   requestWhatsAppPairingCode,
   refreshWhatsAppQr,
   logoutWhatsAppGateway,
+  connectWhatsAppGateway,
   updateDefaultTeacherPhone,
   sendPanggilGuruWhatsApp,
   WhatsAppGatewayConfig,
@@ -279,7 +280,18 @@ export const WhatsAppGatewayView: React.FC<WhatsAppGatewayViewProps> = ({ onShow
                 <div className="mt-3 text-[11px] text-slate-500 font-medium">
                   Update Terakhir: <strong className="text-slate-700">{config.lastQrUpdate}</strong>
                 </div>
-              </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const up = connectWhatsAppGateway('+62 812-4895-7075');
+                    setConfig(up);
+                    onShowFeedback?.('WhatsApp Berhasil Terhubung (Simulasi Scan HP)');
+                  }}
+                  className="mt-2 py-1.5 px-3 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 rounded-xl text-[11px] font-bold transition active:scale-95 cursor-pointer border border-emerald-300"
+                >
+                  Tautkan Langsung (Simulasi Scan HP)
+                </button>
+                </div>
 
               {/* Petunjuk Scan */}
               <div className="bg-emerald-50/70 p-3.5 rounded-2xl border border-emerald-200/60 text-left w-full mt-3 space-y-1.5">
