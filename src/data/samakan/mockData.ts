@@ -1,6 +1,6 @@
 import { UserProfile, StudentAttendance, ClassAttendanceSummary, TeacherCallAlert } from '../../types';
 
-export const SCHOOL_LOGO = '/logo-smk.png';
+export const SCHOOL_LOGO = '/logo-smkn1.png';
 
 export const USER_PROFILES: Record<string, UserProfile> = {
   sekretaris: {
