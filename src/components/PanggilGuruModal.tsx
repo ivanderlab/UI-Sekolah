@@ -19,9 +19,9 @@ interface PanggilGuruModalProps {
 export const PanggilGuruModal: React.FC<PanggilGuruModalProps> = ({
   isOpen,
   onClose,
-  initialTeacherName = 'Budi Santoso, S.Kom',
+  initialTeacherName = 'Budi Santoso, S.Kom.',
   initialClassName = 'XII TKJ 1',
-  initialRoomName = 'Lab Komputer 2',
+  initialRoomName = 'Lab TKJ 2',
   studentName = 'Cindy Laura',
   onSuccess,
 }) => {
@@ -140,10 +140,10 @@ export const PanggilGuruModal: React.FC<PanggilGuruModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-emerald-100 max-h-[90vh] animate-in zoom-in-95 duration-200">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-emerald-100 max-h-[88dvh] animate-in zoom-in-95 duration-200">
         
         {/* Header WhatsApp Style */}
-        <div className="p-4 bg-gradient-to-r from-[#075e54] via-[#128c7e] to-[#25d366] text-white flex items-center justify-between shadow-sm">
+        <div className="shrink-0 p-3.5 sm:p-4 bg-gradient-to-r from-[#075e54] via-[#128c7e] to-[#25d366] text-white flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm shadow-xs">
               <span className="material-symbols-outlined notranslate text-[22px] text-white">
@@ -171,16 +171,16 @@ export const PanggilGuruModal: React.FC<PanggilGuruModalProps> = ({
         </div>
 
         {/* Content Body */}
-        <div className="p-4 sm:p-5 overflow-y-auto space-y-4 text-slate-800 text-xs">
+        <div className="flex-1 min-h-0 p-4 sm:p-5 overflow-y-auto space-y-3.5 text-slate-800 text-xs">
           
           {/* Status Badge Gateway */}
-          <div className={`flex items-center justify-between p-2.5 rounded-2xl border ${
+          <div className={`flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-2xl border ${
             isBotConnected
               ? 'bg-emerald-50 border-emerald-200/80'
               : 'bg-amber-50 border-amber-200/80'
           }`}>
-            <div className="flex items-center gap-2">
-              <span className={`w-2.5 h-2.5 rounded-full ${
+            <div className="flex items-center gap-2 min-w-0">
+              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
                 isBotConnected ? 'bg-emerald-500 ring-4 ring-emerald-200' : 'bg-amber-500 ring-4 ring-amber-200'
               }`} />
               <span className={`text-[11px] font-bold ${
@@ -191,7 +191,7 @@ export const PanggilGuruModal: React.FC<PanggilGuruModalProps> = ({
                   : 'Bot WhatsApp: Standby (Direct wa.me Aktif) 🟡'}
               </span>
             </div>
-            <span className="text-[10px] font-mono bg-white px-2 py-0.5 rounded-md text-emerald-800 border border-emerald-200 font-bold">
+            <span className="text-[10px] font-mono bg-white px-2 py-0.5 rounded-md text-emerald-800 border border-emerald-200 font-bold whitespace-nowrap shrink-0">
               JS Gateway
             </span>
           </div>
@@ -303,7 +303,7 @@ export const PanggilGuruModal: React.FC<PanggilGuruModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center gap-2">
+        <div className="shrink-0 p-3 sm:p-4 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center gap-2">
           <button
             type="button"
             onClick={handleSendAutomatic}

@@ -372,7 +372,7 @@ export default function App() {
         />
         {loginError && (
           <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 bg-red-600 text-white px-5 py-3 rounded-2xl shadow-xl text-sm font-semibold max-w-xs text-center">
-            Ã¢ÂÅ’ {loginError}
+            ❌ {loginError}
           </div>
         )}
         <Toast toast={toast} onClose={() => setToast(null)} />
@@ -417,14 +417,14 @@ export default function App() {
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-surface flex flex-col justify-between font-body text-on-surface">
       {adminInspectingRole && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white px-4 py-2 text-xs font-bold flex items-center justify-between shadow-lg border-b border-white/20">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white px-3 sm:px-4 py-2 text-xs font-bold flex flex-wrap items-center justify-between gap-2 shadow-lg border-b border-white/20">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>Mode Inspeksi {adminInspectingRole === 'guru' ? '👨‍🏫 Guru' : '🎓 Siswa'} • Operator: {currentUser.name}</span>
           </div>
           <button
             onClick={() => setAdminInspectingRole(null)}
-            className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 active:scale-95 cursor-pointer shadow-xs border border-white/20"
+            className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 active:scale-95 cursor-pointer shadow-xs border border-white/20 whitespace-nowrap shrink-0"
           >
             <span className="material-symbols-outlined notranslate text-[14px]">arrow_back</span>
             <span>Kembali ke Portal Admin</span>
@@ -443,13 +443,13 @@ export default function App() {
       )}
 
       {isGuestPublic && (
-        <div className="fixed top-16 left-0 right-0 z-30 bg-amber-500 text-amber-950 px-4 py-1.5 text-xs font-bold flex items-center justify-between shadow-sm">
+        <div className="fixed top-16 left-0 right-0 z-30 bg-amber-500 text-amber-950 px-3 sm:px-4 py-1.5 text-xs font-bold flex flex-wrap items-center justify-between gap-2 shadow-sm">
           <span>Mode Tamu: Jadwal Pelajaran Publik SMKN 1 Sorong</span>
-          <button onClick={() => setIsGuestPublic(false)} className="bg-white/80 hover:bg-white px-2 py-0.5 rounded text-[11px] text-amber-900">Masuk ke Akun</button>
+          <button onClick={() => setIsGuestPublic(false)} className="bg-white/90 hover:bg-white px-2.5 py-0.5 rounded text-[11px] text-amber-900 whitespace-nowrap shrink-0 cursor-pointer">Masuk ke Akun</button>
         </div>
       )}
 
-      <main className={`flex-1 w-full ${adminInspectingRole ? 'pt-24' : isGuestPublic ? 'pt-24' : 'pt-16'}`}>
+      <main className={`flex-1 w-full ${adminInspectingRole ? 'pt-28 sm:pt-24' : isGuestPublic ? 'pt-28 sm:pt-24' : 'pt-16'}`}>
         {currentTab === 'beranda' && (
           (activeUser.role === 'operator' || (activeUser.role as any) === 'admin' || activeUser.role === 'superadmin') ? (
             <AdminDashboardView
@@ -502,7 +502,7 @@ export default function App() {
               onNavigateHome={() => setCurrentTab('beranda')}
               onShowToast={showToast}
             />
-          ) : effectiveRole === 'siswa' ? (
+          ) : (effectiveRole === 'siswa' || effectiveRole === 'sekretaris') ? (
               <div className="w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto pb-24 px-3 sm:px-4">
                 <AttendanceScreen
                   readOnly={!wewenangPengabsen.canInputAttendance}
@@ -593,7 +593,7 @@ export default function App() {
         )}
       </main>
 
-      {currentTab !== 'edit-profil' && currentTab !== 'ganti-password' && (
+      {!isGuestPublic && currentTab !== 'edit-profil' && currentTab !== 'ganti-password' && (
         <BottomNav
           currentTab={currentTab}
           onTabChange={(tab) => setCurrentTab(tab as any)}

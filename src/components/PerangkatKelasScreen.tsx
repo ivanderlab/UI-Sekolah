@@ -236,19 +236,19 @@ export const PerangkatKelasScreen: React.FC<PerangkatKelasScreenProps> = ({
       </div>
 
       {/* 3 Main Officer Cards (Ketua Kelas, Sekretaris 1, Sekretaris 2) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         
         {/* Card 1: KETUA KELAS */}
         <div className="bg-white rounded-3xl p-5 shadow-xs border border-amber-200/80 hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-bl-full pointer-events-none -mr-6 -mt-6 group-hover:scale-110 transition-transform" />
           
-          <div>
-            <div className="flex items-center justify-between mb-3.5">
-              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1.5 shadow-2xs">
+          <div className="relative z-10">
+            <div className="flex items-center justify-between gap-2 flex-wrap mb-3.5">
+              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1.5 shadow-2xs whitespace-nowrap shrink-0">
                 <span>👑</span>
                 <span>Ketua Kelas</span>
               </span>
-              <span className="text-[10px] text-slate-400 font-bold">Wewenang Cadangan 1</span>
+              <span className="text-[10px] text-slate-500 font-bold whitespace-nowrap">Wewenang Cadangan 1</span>
             </div>
 
             <div className="flex items-center gap-3 my-2">
@@ -299,13 +299,13 @@ export const PerangkatKelasScreen: React.FC<PerangkatKelasScreenProps> = ({
         <div className="bg-white rounded-3xl p-5 shadow-xs border border-sky-200/80 hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 bg-sky-50 rounded-bl-full pointer-events-none -mr-6 -mt-6 group-hover:scale-110 transition-transform" />
           
-          <div>
-            <div className="flex items-center justify-between mb-3.5">
-              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-sky-100 text-sky-900 border border-sky-300 flex items-center gap-1.5 shadow-2xs">
+          <div className="relative z-10">
+            <div className="flex items-center justify-between gap-2 flex-wrap mb-3.5">
+              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-sky-100 text-sky-900 border border-sky-300 flex items-center gap-1.5 shadow-2xs whitespace-nowrap shrink-0">
                 <span>✍️</span>
                 <span>Sekretaris 1</span>
               </span>
-              <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold border border-emerald-200">
+              <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md font-bold border border-emerald-200 whitespace-nowrap shrink-0">
                 Petugas Utama
               </span>
             </div>
@@ -358,13 +358,13 @@ export const PerangkatKelasScreen: React.FC<PerangkatKelasScreenProps> = ({
         <div className="bg-white rounded-3xl p-5 shadow-xs border border-emerald-200/80 hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full pointer-events-none -mr-6 -mt-6 group-hover:scale-110 transition-transform" />
           
-          <div>
-            <div className="flex items-center justify-between mb-3.5">
-              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center gap-1.5 shadow-2xs">
+          <div className="relative z-10">
+            <div className="flex items-center justify-between gap-2 flex-wrap mb-3.5">
+              <span className="px-3 py-1 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center gap-1.5 shadow-2xs whitespace-nowrap shrink-0">
                 <span>📋</span>
                 <span>Sekretaris 2</span>
               </span>
-              <span className="text-[10px] text-slate-400 font-bold">Pendamping Presensi</span>
+              <span className="text-[10px] text-slate-500 font-bold whitespace-nowrap">Pendamping Presensi</span>
             </div>
 
             <div className="flex items-center gap-3 my-2">

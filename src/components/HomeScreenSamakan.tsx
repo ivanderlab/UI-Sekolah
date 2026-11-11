@@ -173,7 +173,7 @@ export const HomeScreenGuru: React.FC<HomeScreenProps> = ({
         <div className="relative z-10 flex justify-between items-start">
           <div className="flex gap-3 items-center">
             <div className="w-14 h-14 rounded-full bg-white p-1 shadow-md relative">
-              <img src="https://ui-avatars.com/api/?name=Haris+T&background=0D8ABC&color=fff&size=128" alt="Profile" className="w-full h-full rounded-full object-cover" />
+              <img src={user.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'Guru')}&background=0D8ABC&color=fff&size=128`} alt={user.name || 'Profile'} className="w-full h-full rounded-full object-cover" />
               <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></div>
             </div>
             <div>
@@ -938,7 +938,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ( {
             </div>
 
             <p className="font-body text-xs text-amber-50 leading-relaxed">
-              Pak Budi Santoso, S.Kom. (Pemrograman Web) belum memindai check-in di Lab RPL 2.
+              Pak Budi Santoso, S.Kom. (Administrasi Infrastruktur Jaringan) belum memindai check-in di Lab TKJ 2.
               Sekretaris dapat mengirim sinyal kesiapan kelas.
             </p>
 
@@ -1439,7 +1439,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ( {
                   Rekap Kehadiran Bulan {new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Kelas XII TKJ 1 • Semester Genap T.A 2024/2025
+                  Kelas XII TKJ 1 • Semester Ganjil T.A 2026/2027
                 </p>
               </div>
               <button
@@ -1489,9 +1489,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ( {
       <PanggilGuruModal
         isOpen={showPanggilGuruModal}
         onClose={() => setShowPanggilGuruModal(false)}
-        initialTeacherName="Budi Hartono, S.Kom."
+        initialTeacherName="Budi Santoso, S.Kom."
         initialClassName={(user as any).kelas?.nama || 'XII TKJ 1'}
-        initialRoomName="Lab Komputer 2"
+        initialRoomName="Lab TKJ 2"
         studentName={user.name || 'Cindy Laura'}
         onSuccess={(msg) => {
           onSendTeacherCall();

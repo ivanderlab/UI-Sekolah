@@ -657,7 +657,7 @@ export const JadwalScreen: React.FC<JadwalScreenProps> = ({ onShowToast, user, o
   const [classes, setClasses] = useState<{ id: string; nama: string }[]>([
     { id: 'e88128be-8fc3-4973-8d69-00ef17571626', nama: 'XII TKJ 1' },
     { id: 'class-dkv-1', nama: 'XII DKV 1' },
-    { id: 'class-rpl-1', nama: 'XII RPL 1' },
+    { id: 'class-dkv-2', nama: 'XII DKV 2' },
   ]);
   const [selectedKelasId, setSelectedKelasId] = useState<string>(
     user?.kelas_id || (user as any)?.kelas?.id || 'e88128be-8fc3-4973-8d69-00ef17571626'

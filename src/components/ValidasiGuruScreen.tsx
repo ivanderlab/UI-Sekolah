@@ -368,9 +368,9 @@ export const ValidasiGuruScreen: React.FC<ValidasiGuruScreenProps> = ({
   }, [selectedClassId, activeJadwalItem?.id, todayStr]);
 
   // Metadata Display Helpers
-  const activeClassName = activeJadwalItem?.kelas?.nama || teacherClasses.find(c => c.id === selectedClassId)?.nama || 'XI RPL 1';
-  const activeMapelName = activeJadwalItem?.mapel?.nama || teacherClasses.find(c => c.id === selectedClassId)?.mapelNama || 'Pemrograman Web & Perangkat Bergerak';
-  const activeRoomName = activeJadwalItem?.ruang || 'LAB RPL 2';
+  const activeClassName = activeJadwalItem?.kelas?.nama || teacherClasses.find(c => c.id === selectedClassId)?.nama || 'XII TKJ 1';
+  const activeMapelName = activeJadwalItem?.mapel?.nama || teacherClasses.find(c => c.id === selectedClassId)?.mapelNama || 'Administrasi Infrastruktur Jaringan';
+  const activeRoomName = activeJadwalItem?.ruang || 'Lab TKJ 2';
   const activeTimeRange = activeJadwalItem?.jam_mulai && activeJadwalItem?.jam_selesai
     ? `${activeJadwalItem.jam_mulai.substring(0, 5)} - ${activeJadwalItem.jam_selesai.substring(0, 5)} WIT (3 JP)`
     : '08.45 - 10.15 WIT (3 JP)';
@@ -537,7 +537,7 @@ export const ValidasiGuruScreen: React.FC<ValidasiGuruScreenProps> = ({
   const content = (
     <div className="bg-surface-container-lowest font-body text-on-surface flex flex-col min-h-screen antialiased">
       {/* Top Fixed Header */}
-      <header className="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(11,99,168,0.06)] transition-all duration-200">
+      <header className="fixed top-0 left-0 right-0 z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(11,99,168,0.06)] transition-all duration-200 [&>*]:max-w-4xl [&>*]:mx-auto [&>*]:w-full">
         <div className="h-16 px-margin flex items-center justify-between">
           <div className="flex items-center gap-space-xs">
             <button
@@ -593,7 +593,7 @@ export const ValidasiGuruScreen: React.FC<ValidasiGuruScreenProps> = ({
 
       {/* Main Content Container */}
       <main className="flex flex-col relative w-full pt-16 bg-surface-container-lowest min-h-screen">
-        <div className="flex flex-col w-full pb-32">
+        <div className="flex flex-col w-full max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto px-3 sm:px-4 pb-44">
           {/* DANA Style Curved Blue Backdrop Banner */}
           <div
             className="relative w-full bg-gradient-to-b from-primary via-primary-container to-secondary pb-10 pt-4 px-margin overflow-hidden rounded-b-[28px] shadow-sm animate-fade-in"
@@ -657,7 +657,7 @@ export const ValidasiGuruScreen: React.FC<ValidasiGuruScreenProps> = ({
                   </p>
                   <span className="font-label-sm text-label-sm text-outline">{morningDraftTime}</span>
                 </div>
-                <p className="font-body-sm text-body-sm text-on-surface-variant truncate mt-0.5">
+                <p className="font-body-sm text-body-sm text-on-surface-variant leading-snug mt-0.5">
                   {hasMorningDraft ? (
                     <>
                       Draf oleh: <span className="font-medium text-primary">{secretaryName}</span> (Sekretaris Kelas)
@@ -985,8 +985,8 @@ export const ValidasiGuruScreen: React.FC<ValidasiGuruScreenProps> = ({
         </div>
 
         {/* Sticky Bottom Action Bar (Fintech Primary CTA) */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-xl px-margin py-3 pb-safe shadow-[0_-8px_24px_rgba(11,99,168,0.12)]">
-          <div className="max-w-md mx-auto flex flex-col gap-2">
+        <div className="fixed bottom-[76px] sm:bottom-[80px] left-0 right-0 z-30 bg-surface-container-lowest/95 backdrop-blur-xl px-3 sm:px-4 py-3 pb-safe shadow-[0_-8px_24px_rgba(11,99,168,0.12)] border-t border-slate-100">
+          <div className="max-w-md sm:max-w-xl md:max-w-3xl lg:max-w-4xl mx-auto flex flex-col gap-2">
             {/* Auto Save status label */}
             <div className="flex items-center justify-between px-1">
               <div className="flex items-center gap-1.5">

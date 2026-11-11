@@ -31,7 +31,7 @@ export const Toast: React.FC<ToastProps> = ({ toast, onClose }) => {
   return (
     <div
       onClick={onClose}
-      className="fixed top-20 left-1/2 -translate-x-1/2 w-max max-w-[90vw] z-50 bg-[#213145] text-[#eaf1ff] px-3 py-2 rounded-full shadow-2xl flex items-center gap-2.5 border border-white/10 animate-in slide-in-from-top-6 duration-200 cursor-pointer"
+      className="fixed bottom-24 left-1/2 -translate-x-1/2 md:bottom-auto md:top-20 md:right-6 md:left-auto md:translate-x-0 w-max max-w-[calc(100vw-2rem)] md:max-w-sm z-50 bg-[#213145] text-[#eaf1ff] px-3.5 py-2 rounded-2xl md:rounded-full shadow-2xl flex items-center gap-2.5 border border-white/10 animate-in slide-in-from-bottom-4 md:slide-in-from-top-6 duration-200 cursor-pointer"
     >
       <div
         className={`w-7 h-7 rounded-full ${

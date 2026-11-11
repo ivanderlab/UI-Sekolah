@@ -204,7 +204,7 @@ export const ScheduleModal: React.FC<ScheduleModalProps> = ({
                 className="w-full h-12 bg-[#f2f4f6] rounded-xl px-3.5 pr-10 text-[14px] text-[#191c1e] font-medium appearance-none focus:outline-hidden focus:bg-[#eceef0] transition-colors cursor-pointer"
               >
                 <option value="Lab Komputer 2">Lab Komputer 2</option>
-                <option value="Bengkel RPL">Bengkel RPL</option>
+                <option value="Studio DKV 1">Studio DKV 1</option>
                 <option value="Lab Web Dev">Lab Web Dev</option>
                 <option value="Lab Jaringan TKJ">Lab Jaringan TKJ</option>
                 <option value="Ruang Kelas TKJ 1">Ruang Kelas TKJ 1</option>

@@ -115,7 +115,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                       <span className="text-[13px] font-bold text-slate-800">Tahun Ajaran</span>
                       <span className="bg-emerald-100 text-emerald-700 text-[9px] px-1.5 py-0.5 rounded font-bold">Aktif</span>
                     </div>
-                    <span className="text-[11px] text-slate-400 font-medium">2024/2025 - Semester Ganjil</span>
+                    <span className="text-[11px] text-slate-400 font-medium">2026/2027 - Semester Ganjil</span>
                   </div>
                 </div>
                 <span className="material-symbols-outlined notranslate text-slate-300 text-[20px] group-hover:translate-x-1 transition-transform">chevron_right</span>

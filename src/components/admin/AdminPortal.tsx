@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Header } from './Header';
 import { BottomNav, TabType } from './BottomNav';
 import { AdminDashboardView } from './AdminDashboardView';
-import { JadwalView } from './JadwalView';
+import { JadwalView, getJpRangeFromTimes } from './JadwalView';
 import { RekapView } from './RekapView';
 import { ProfilView, getUserAvatar } from './ProfilView';
 import { ScheduleModal } from './ScheduleModal';
@@ -74,12 +74,12 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ session, onLogout, onS
             const assignedClass = dbClasses?.find((c) => c.wali_kelas_id === t.id);
             return {
               id: t.id,
-              nip: t.username === 'budihartono' ? '198501152010011001'
-                : t.username === 'dewilestari' ? '199003202015022002'
-                : t.username === 'iwansetiawan' ? '198708142011011003'
-                : '199211052016032004',
+              nip: t.username.includes('budi') ? '198501152010011001'
+                : t.username.includes('dewi') ? '199003202015022002'
+                : t.username.includes('iwan') ? '198708142011011003'
+                : `19900101201803${String(idx + 1).padStart(4, '0')}`,
               name: t.nama,
-              subject: t.username.includes('budi') || t.username.includes('dewi') ? 'Guru Kejuruan RPL' : 'Guru Kejuruan TKJ',
+              subject: t.username.includes('dewi') ? 'Guru Kejuruan DKV' : 'Guru Kejuruan TKJ',
               room: assignedClass ? `Wali Kelas ${assignedClass.nama}` : 'Lab Komputer SMKN 1',
             };
           });
@@ -95,7 +95,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ session, onLogout, onS
 
         if (active && dbStudents && dbStudents.length > 0) {
           const mappedStudents: Student[] = dbStudents.map((s, idx) => {
-            const kName = (s.kelas as any)?.nama || 'XII RPL 1';
+            const kName = (s.kelas as any)?.nama || 'XII TKJ 1';
             return {
               id: s.id,
               no: String(idx + 1).padStart(2, '0'),
@@ -123,19 +123,20 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ session, onLogout, onS
           const mappedSchedules: ScheduleSlot[] = dbJadwal.map((j, idx) => {
             const jStart = j.jam_mulai ? j.jam_mulai.substring(0, 5) : '07:15';
             const jEnd = j.jam_selesai ? j.jam_selesai.substring(0, 5) : '08:45';
-            const kName = (j.kelas as any)?.nama || 'XII RPL 1';
+            const kName = (j.kelas as any)?.nama || 'XII TKJ 1';
             const mName = (j.mapel as any)?.nama || 'Mata Pelajaran';
-            const gName = (j.guru as any)?.nama || 'Budi Hartono, S.Kom.';
+            const gName = (j.guru as any)?.nama || 'Budi Santoso, S.Kom.';
+            const jp = getJpRangeFromTimes(jStart, jEnd);
             return {
               id: j.id || `sch-db-${idx}`,
               day: (j.hari as any) || 'Kamis',
-              jpStart: (idx % 6) + 1,
-              jpEnd: (idx % 6) + 2,
-              jpLabel: `JP ${(idx % 6) + 1} - ${(idx % 6) + 2}`,
+              jpStart: jp.jpStart,
+              jpEnd: jp.jpEnd,
+              jpLabel: jp.jpLabel,
               timeRange: `${jStart} - ${jEnd} WIT`,
               subject: mName,
               teacher: gName,
-              room: kName.includes('RPL') ? 'Lab RPL 2' : 'Lab Komputer 1',
+              room: kName.includes('DKV') ? 'Studio DKV 1' : 'Lab Komputer 1',
               badgeType: 'normal',
               classTarget: kName,
             };
@@ -435,7 +436,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({ session, onLogout, onS
 
       {/* Toast */}
       {toastMessage && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#2d3133] text-[#eff1f3] px-4 py-2.5 rounded-full shadow-xl text-[12px] font-semibold flex items-center gap-2 animate-bounceIn border border-white/10">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 md:bottom-auto md:top-20 md:right-6 md:left-auto md:translate-x-0 w-max max-w-[calc(100vw-2rem)] z-50 bg-[#2d3133] text-[#eff1f3] px-4 py-2.5 rounded-2xl md:rounded-full shadow-xl text-[12px] font-semibold flex items-center gap-2 animate-bounceIn border border-white/10">
           <span className="material-symbols-outlined text-[#6ffbbe] text-[18px]">
             check_circle
           </span>

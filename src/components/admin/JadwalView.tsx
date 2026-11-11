@@ -4,6 +4,29 @@ import { exportScheduleToExcel, parseExcelToSchedules } from '../../utils/excelH
 import { TEACHER_SCHEDULES } from './mockData';
 import { supabase } from '../../lib/supabase';
 
+export function getJpRangeFromTimes(startStr: string, endStr: string) {
+  const toMin = (s: string) => {
+    const [h, m] = s.split(':').map((n) => parseInt(n, 10) || 0);
+    return h * 60 + m;
+  };
+  const sMin = toMin(startStr);
+  const eMin = toMin(endStr);
+  const effectiveOffset = (m: number) => {
+    let d = Math.max(0, m - (7 * 60 + 15));
+    if (m >= 10 * 60) d -= 30;
+    if (m >= 12 * 60 + 45) d -= 30;
+    return d;
+  };
+  const jpStart = Math.max(1, Math.min(9, Math.round(effectiveOffset(sMin) / 45) + 1));
+  const durationJp = Math.max(1, Math.round(Math.max(45, eMin - sMin) / 45));
+  const jpEnd = Math.min(10, jpStart + durationJp - 1);
+  return {
+    jpStart,
+    jpEnd,
+    jpLabel: jpStart === jpEnd ? `JP ${jpStart}` : `JP ${jpStart} - ${jpEnd}`,
+  };
+}
+
 interface JadwalViewProps {
   schedules: ScheduleSlot[];
   teacherSchedules?: ScheduleSlot[];
@@ -41,7 +64,9 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
   const [selectedDay, setSelectedDay] = useState<'Senin' | 'Selasa' | 'Rabu' | 'Kamis' | 'Jumat' | 'Sabtu'>('Selasa');
   const [isClassDropdownOpen, setIsClassDropdownOpen] = useState(false);
   const [classList, setClassList] = useState<string[]>([
-    'XII RPL 1', 'XII TKJ 1'
+    'X TKJ 1', 'X TKJ 2', 'X DKV 1', 'X DKV 2',
+    'XI TKJ 1', 'XI TKJ 2', 'XI DKV 1', 'XI DKV 2',
+    'XII TKJ 1', 'XII TKJ 2', 'XII DKV 1', 'XII DKV 2',
   ]);
   const [classSearch, setClassSearch] = useState('');
   const [classSchedules, setClassSchedules] = useState<ScheduleSlot[]>([]);
@@ -90,17 +115,18 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
             const jEnd = j.jam_selesai ? j.jam_selesai.substring(0, 5) : '08:45';
             const kName = (j.kelas as any)?.nama || selectedClass;
             const mName = (j.mapel as any)?.nama || 'Mata Pelajaran';
-            const gName = (j.guru as any)?.nama || 'Budi Hartono, S.Kom.';
+            const gName = (j.guru as any)?.nama || 'Budi Santoso, S.Kom.';
+            const jp = getJpRangeFromTimes(jStart, jEnd);
             return {
               id: j.id || `sch-${selectedClass}-${idx}`,
               day: (j.hari as any) || 'Selasa',
-              jpStart: (idx % 8) + 1,
-              jpEnd: (idx % 8) + 2,
-              jpLabel: `JP ${(idx % 8) + 1} - ${(idx % 8) + 2}`,
+              jpStart: jp.jpStart,
+              jpEnd: jp.jpEnd,
+              jpLabel: jp.jpLabel,
               timeRange: `${jStart} - ${jEnd} WIT`,
               subject: mName,
               teacher: gName,
-              room: 'Lab Komputer SMKN 1',
+              room: kName.includes('DKV') ? 'Studio DKV SMKN 1' : 'Lab Komputer SMKN 1',
               badgeType: 'normal',
               classTarget: kName,
             };
@@ -177,7 +203,7 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
 
       {/* Atmospheric Curved Header */}
       <div className="relative bg-gradient-to-b from-[#00609b] to-[#0761a2] pt-4 pb-14 px-4 rounded-b-[28px] shadow-sm text-white">
-        <div className="flex items-center justify-between gap-2 mb-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-1.5">
             <span className="material-symbols-outlined text-[20px] text-[#6ffbbe]">
               event_available
@@ -186,7 +212,7 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
               {isGuru ? 'Agenda Mengajar Guru' : 'Jadwal Pelajaran Rombel'}
             </span>
           </div>
-          <span className="px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[11px] font-bold shadow-xs">
+          <span className="px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[11px] font-bold shadow-xs whitespace-nowrap shrink-0">
             Semester Ganjil 2026/2027
           </span>
         </div>
@@ -232,12 +258,12 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
           {/* Selector 1: Kelas (HANYA UNTUK ADMIN / SUPERADMIN - SISWA TIDAK BISA GANTI KELAS) */}
           {isAdminOrSuper && (
             <div className="flex flex-col gap-1 relative">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <label className="text-[11px] text-[#404751] font-bold uppercase tracking-wider flex items-center gap-1">
                   <span className="material-symbols-outlined text-[15px] text-[#00609b]">school</span>
                   <span>Pilih Rombel / Kelas (Admin)</span>
                 </label>
-                <span className="text-[10px] text-[#00609b] font-bold bg-[#cfe4ff]/60 px-2.5 py-0.5 rounded-full">
+                <span className="text-[10px] text-[#00609b] font-bold bg-[#cfe4ff]/60 px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0">
                   Rombel: {selectedClass}
                 </span>
               </div>
@@ -364,17 +390,17 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
         </div>
 
         {/* Timetable Overview Header Strip */}
-        <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2">
-            <span className="text-[16px] text-[#191c1e] font-bold">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-[15px] sm:text-[16px] text-[#191c1e] font-bold whitespace-nowrap">
               {isGuru ? `Agenda Mengajar ${selectedDay}` : `Jadwal ${selectedDay}`}
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-[#cfe4ff] text-[#001d34] text-[11px] font-bold">
+            <span className="px-2.5 py-0.5 rounded-full bg-[#cfe4ff] text-[#001d34] text-[11px] font-bold whitespace-nowrap shrink-0">
               {currentDaySchedules.filter((s) => !s.isBreak).length} Sesi
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5 shrink-0">
             {/* Operator/Admin Excel Export & Import */}
             {isAdminOrSuper && (
               <>
@@ -382,7 +408,7 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   title="Import Jadwal dari File Excel"
-                  className="text-[#00609b] bg-[#cfe4ff]/50 hover:bg-[#cfe4ff] px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors"
+                  className="text-[#00609b] bg-[#cfe4ff]/50 hover:bg-[#cfe4ff] px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors whitespace-nowrap cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[15px]">upload_file</span>
                   <span>Import</span>
@@ -392,7 +418,7 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
                   type="button"
                   onClick={handleExportExcel}
                   title="Export Jadwal ke Excel (.xlsx)"
-                  className="text-emerald-800 bg-emerald-100 hover:bg-emerald-200 px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors"
+                  className="text-emerald-800 bg-emerald-100 hover:bg-emerald-200 px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 transition-colors whitespace-nowrap cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[15px]">file_download</span>
                   <span>Excel</span>
@@ -403,7 +429,7 @@ export const JadwalView: React.FC<JadwalViewProps> = ({
             <button
               type="button"
               onClick={onPrint}
-              className="text-[#00609b] hover:text-[#0761a2] text-[12px] font-bold flex items-center gap-0.5 transition-colors"
+              className="text-[#00609b] hover:text-[#0761a2] text-[12px] font-bold flex items-center gap-0.5 transition-colors whitespace-nowrap cursor-pointer px-1.5 py-1"
             >
               <span className="material-symbols-outlined text-[16px]">print</span>
               <span>Cetak</span>

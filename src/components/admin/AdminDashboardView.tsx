@@ -94,7 +94,9 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   const [selectedTeacherForWali, setSelectedTeacherForWali] = useState<Teacher | null>(null);
   const [targetClassForWali, setTargetClassForWali] = useState('XII TKJ 1');
   const [availableClassesList, setAvailableClassesList] = useState<string[]>([
-    'XII RPL 1', 'XII TKJ 1'
+    'X TKJ 1', 'X TKJ 2', 'X DKV 1', 'X DKV 2',
+    'XI TKJ 1', 'XI TKJ 2', 'XI DKV 1', 'XI DKV 2',
+    'XII TKJ 1', 'XII TKJ 2', 'XII DKV 1', 'XII DKV 2',
   ]);
 
   // Sync all 12 TKJ & DKV classes dynamically from Supabase
@@ -172,7 +174,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   }, [availableClassesList, students]);
 
   const auditLogs = [
-    { id: 'log-1', time: '08:50 WIT', user: 'Budi Hartono, S.Kom.', action: 'Kunci Presensi Jam Kejuruan (XII RPL 1 - 9 Hadir)' },
+    { id: 'log-1', time: '08:50 WIT', user: 'Budi Santoso, S.Kom.', action: 'Kunci Presensi Jam Kejuruan (XII TKJ 1 - 34 Siswa)' },
     { id: 'log-2', time: '08:15 WIT', user: 'Iwan Setiawan, S.Kom.', action: 'Verifikasi Presensi XII TKJ 1' },
     { id: 'log-3', time: '07:30 WIT', user: 'Tata Usaha SMKN 1', action: 'Siarkan Pengumuman Asesmen Sekolah' },
     { id: 'log-4', time: '07:00 WIT', user: 'Superadmin SIAP', action: 'Inisialisasi Sistem Presensi Lomba 2026' },
@@ -252,8 +254,8 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
   };
 
   const handleResetPasswordBulk = () => {
-    if (window.confirm('Reset semua kata sandi guru dan siswa yang bermasalah ke standar default "Demo@2026"?')) {
-      showFeedback('Kredensial berhasil disetel ulang ke default: Demo@2026!');
+    if (window.confirm('Reset semua kata sandi guru dan siswa yang bermasalah ke standar default "Demo@2025"?')) {
+      showFeedback('Kredensial berhasil disetel ulang ke default: Demo@2025!');
     }
   };
 
@@ -413,56 +415,46 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                 </span>
                 <span className="text-base select-none">{isSuperadmin ? '✨' : '⚡'}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] text-[#cfe4ff] font-semibold uppercase tracking-wider truncate">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                <span className="text-[11px] text-[#cfe4ff] font-semibold uppercase tracking-wider leading-tight">
                   {roleTitle}
                 </span>
-                <span className="w-1 h-1 rounded-full bg-[#cfe4ff]/60" />
-                <span className="text-[11px] text-white/80 shrink-0">SMKN 1 Sorong</span>
+                <span className="w-1 h-1 rounded-full bg-[#cfe4ff]/60 hidden sm:inline-block" />
+                <span className="text-[11px] text-white/85 whitespace-nowrap">SMKN 1 Sorong</span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 shrink-0">
             <button
               aria-label="Export Wizard Cepat"
               type="button"
               onClick={() => handleOpenExportWizard('bulanan', 'harian')}
-              className="px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs"
+              className="px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs whitespace-nowrap"
             >
               <span className="material-symbols-outlined text-[15px]">download</span>
               <span className="hidden sm:inline">Export Excel</span>
-            </button>
-
-            <button
-              aria-label="Notifikasi"
-              type="button"
-              onClick={onOpenNotifications}
-              className="relative w-10 h-10 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/25 active:scale-95 transition-all shadow-sm shrink-0"
-            >
-              <span className="material-symbols-outlined text-[22px]">notifications</span>
-              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#ffdad6]" />
             </button>
           </div>
         </div>
 
         {/* Live System Indicator */}
-        <div className="relative z-10 mt-3 flex items-center justify-between bg-black/20 backdrop-blur-md rounded-xl py-1.5 px-3">
-          <div className="flex items-center gap-1.5 text-white">
-            <span className="material-symbols-outlined text-[16px] text-[#6ffbbe]">
+        <div className="relative z-10 mt-3 flex flex-wrap items-center justify-between gap-2 bg-black/20 backdrop-blur-md rounded-xl py-1.5 px-3">
+          <div className="flex items-center gap-1.5 text-white min-w-0">
+            <span className="material-symbols-outlined text-[16px] text-[#6ffbbe] shrink-0">
               dns
             </span>
-            <span className="text-[11px] font-bold tracking-wide">
+            <span className="text-[11px] font-bold tracking-wide leading-tight">
               {isSuperadmin
                 ? 'Root Control Panel • Supabase DB Connected'
                 : 'Operator Portal • Realtime Sync'}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[9px] bg-white/20 text-white px-2 py-0.5 rounded-full font-bold hidden sm:inline">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[9px] bg-white/20 text-white px-2 py-0.5 rounded-full font-bold hidden sm:inline whitespace-nowrap">
               TLS 256-Bit
             </span>
-            <span className="text-[10px] bg-[#6ffbbe] text-[#003823] px-2.5 py-0.5 rounded-full font-extrabold">
+            <span className="text-[10px] bg-[#6ffbbe] text-[#003823] px-2.5 py-0.5 rounded-full font-extrabold whitespace-nowrap shrink-0">
               {isSuperadmin ? 'ROOT OK' : 'ONLINE'}
             </span>
           </div>
@@ -586,18 +578,18 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
           <div className="flex flex-col gap-4 animate-fadeIn">
             {/* KPI Summary Card */}
             <div className="bg-white rounded-3xl p-5 shadow-[0_10px_25px_-5px_rgba(0,95,160,0.1)] border border-[#eceef0] flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#006947] animate-pulse" />
-                  <span className="text-[12px] uppercase tracking-wider text-[#404751] font-bold">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#006947] animate-pulse shrink-0" />
+                  <span className="text-[11px] sm:text-[12px] uppercase tracking-wider text-[#404751] font-bold">
                     REKAPITULASI PRESENSI HARI INI
                   </span>
                 </div>
-                <div className="flex bg-[#f2f4f6] p-0.5 rounded-lg text-[11px] font-bold">
+                <div className="flex bg-[#f2f4f6] p-0.5 rounded-lg text-[11px] font-bold shrink-0">
                   <button
                     type="button"
                     onClick={() => setSelectedPeriod('hari_ini')}
-                    className={`px-2 py-0.5 rounded-md transition-all ${
+                    className={`px-2.5 py-1 rounded-md transition-all whitespace-nowrap cursor-pointer ${
                       selectedPeriod === 'hari_ini'
                         ? 'bg-[#00609b] text-white shadow-xs'
                         : 'text-[#404751]'
@@ -608,7 +600,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   <button
                     type="button"
                     onClick={() => setSelectedPeriod('bulan_ini')}
-                    className={`px-2 py-0.5 rounded-md transition-all ${
+                    className={`px-2.5 py-1 rounded-md transition-all whitespace-nowrap cursor-pointer ${
                       selectedPeriod === 'bulan_ini'
                         ? 'bg-[#00609b] text-white shadow-xs'
                         : 'text-[#404751]'
@@ -674,14 +666,14 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
             </div>
 
             {/* Quick Action Bar to Export Wizard */}
-            <div className="bg-gradient-to-r from-[#00609b] to-[#0761a2] text-white p-4 rounded-3xl shadow-sm flex items-center justify-between gap-3">
+            <div className="bg-gradient-to-r from-[#00609b] to-[#0761a2] text-white p-4 rounded-3xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2.5 min-w-0">
                 <span className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-[20px] shrink-0">
                   📊
                 </span>
                 <div className="min-w-0">
-                  <p className="text-[13px] font-bold truncate">Export Laporan Presensi Excel</p>
-                  <p className="text-[10px] text-[#cfe4ff] truncate">
+                  <p className="text-[13px] font-bold leading-snug">Export Laporan Presensi Excel</p>
+                  <p className="text-[10px] text-[#cfe4ff] leading-snug">
                     Mulai dari mingguan, bulanan, 3 bulan, 1 semester, 1 kelas (2 basis)
                   </p>
                 </div>
@@ -689,7 +681,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
               <button
                 type="button"
                 onClick={() => handleOpenExportWizard('bulanan', 'harian')}
-                className="px-3.5 py-2 rounded-xl bg-white text-[#00609b] text-[11px] font-bold hover:bg-[#cfe4ff] active:scale-95 transition-all shadow-xs shrink-0 cursor-pointer"
+                className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-white text-[#00609b] text-[11px] font-bold hover:bg-[#cfe4ff] active:scale-95 transition-all shadow-xs shrink-0 whitespace-nowrap cursor-pointer text-center"
               >
                 Buka Export Wizard
               </button>
@@ -697,11 +689,11 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
 
             {/* Rombel Summary Table */}
             <div className="bg-white rounded-3xl p-4 shadow-sm border border-[#eceef0] flex flex-col gap-3">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2">
                 <h3 className="text-[14px] font-bold text-[#191c1e]">
                   Status Validasi Rombel Hari Ini
                 </h3>
-                <span className="text-[11px] text-[#00609b] font-bold">36 Rombel</span>
+                <span className="text-[11px] text-[#00609b] font-bold whitespace-nowrap shrink-0">{classSummaries.length} Rombel</span>
               </div>
 
               <div className="divide-y divide-[#eceef0]">
@@ -1110,7 +1102,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                     <p className="text-[11px] text-[#707882]">Parameter JP dan toleransi presensi</p>
                   </div>
                 </div>
-                <span className="text-[10px] bg-purple-100 text-purple-800 font-extrabold px-2.5 py-0.5 rounded-full">
+                <span className="text-[10px] bg-purple-100 text-purple-800 font-extrabold px-2.5 py-0.5 rounded-full whitespace-nowrap shrink-0">
                   Level 0 Only
                 </span>
               </div>
@@ -1187,7 +1179,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   <div className="min-w-0">
                     <p className="text-[12px] font-bold text-amber-950">Reset Sandi Massal Default</p>
                     <p className="text-[11px] text-amber-800">
-                      Setel ulang sandi semua user yang lupa ke default <code className="font-bold">Demo@2026</code>
+                      Setel ulang sandi semua user yang lupa ke default <code className="font-bold">Demo@2025</code>
                     </p>
                   </div>
                   <button
@@ -1382,7 +1374,7 @@ export const AdminDashboardView: React.FC<AdminDashboardViewProps> = ({
                   >
                     <option value="XII DKV 1">XII DKV 1</option>
                     <option value="XII TKJ 1">XII TKJ 1</option>
-                    <option value="XII RPL 1">XII RPL 1</option>
+                    <option value="XII TKJ 2">XII TKJ 2</option>
                     <option value="XI TKJ 2">XI TKJ 2</option>
                   </select>
                 </div>

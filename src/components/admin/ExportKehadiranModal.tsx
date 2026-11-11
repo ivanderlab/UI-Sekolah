@@ -366,7 +366,16 @@ export const ExportKehadiranModal: React.FC<ExportKehadiranModalProps> = ({
                   onChange={(e) => setSelectedClass(e.target.value)}
                   className="w-full h-9 px-3 bg-white rounded-xl text-[12px] font-semibold text-[#191c1e] border border-[#eceef0] focus:ring-2 focus:ring-[#00609b] outline-hidden"
                 >
-                  <option value="XII RPL 1">XII RPL 1 (Rekayasa Perangkat Lunak)</option>
+                  <option value="XII DKV 1">XII DKV 1 (Desain Komunikasi Visual)</option>
+                  <option value="XII DKV 2">XII DKV 2 (Desain Komunikasi Visual)</option>
+                  <option value="XI TKJ 1">XI TKJ 1</option>
+                  <option value="XI TKJ 2">XI TKJ 2</option>
+                  <option value="XI DKV 1">XI DKV 1</option>
+                  <option value="XI DKV 2">XI DKV 2</option>
+                  <option value="X TKJ 1">X TKJ 1</option>
+                  <option value="X TKJ 2">X TKJ 2</option>
+                  <option value="X DKV 1">X DKV 1</option>
+                  <option value="X DKV 2">X DKV 2</option>
                   <option value="XII TKJ 1">XII TKJ 1 (Teknik Komputer Jaringan)</option>
                 </select>
               </div>

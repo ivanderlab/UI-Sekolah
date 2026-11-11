@@ -27,14 +27,14 @@ export const RekapView: React.FC<RekapViewProps> = ({
 }) => {
   const isTeacherOrAdmin = userRole === 'guru' || userRole === 'admin' || userRole === 'superadmin';
   const [rekapTab, setRekapTab] = useState<'pribadi' | 'kelas'>(isTeacherOrAdmin ? 'kelas' : 'pribadi');
-  const [selectedClass, setSelectedClass] = useState('XII RPL 1');
+  const [selectedClass, setSelectedClass] = useState('XII TKJ 1');
   const [isClassDropdownOpen, setIsClassDropdownOpen] = useState(false);
   const [selectedWeek, setSelectedWeek] = useState('Minggu 2 (8 - 14 Okt)');
   const [selectedMonth, setSelectedMonth] = useState('Oktober 2026');
   const [isMonthDropdownOpen, setIsMonthDropdownOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
-  const classList = ['XII RPL 1', 'XII TKJ 1', 'Semua Siswa'];
+  const classList = [...Array.from(new Set([...students.map((s) => s.kelas).filter(Boolean) as string[], 'X TKJ 1', 'X TKJ 2', 'X DKV 1', 'X DKV 2', 'XI TKJ 1', 'XI TKJ 2', 'XI DKV 1', 'XI DKV 2', 'XII TKJ 1', 'XII TKJ 2', 'XII DKV 1', 'XII DKV 2'])).sort(), 'Semua Siswa'];
   const weekList = [
     'Minggu 1 (1 - 7 Okt)',
     'Minggu 2 (8 - 14 Okt)',
@@ -95,7 +95,7 @@ export const RekapView: React.FC<RekapViewProps> = ({
               <button
                 type="button"
                 onClick={() => setIsMonthDropdownOpen(!isMonthDropdownOpen)}
-                className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-all"
+                className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-all whitespace-nowrap shrink-0"
               >
                 <span>📅 {selectedMonth}</span>
                 <span className="material-symbols-outlined text-[14px]">expand_more</span>
@@ -127,7 +127,7 @@ export const RekapView: React.FC<RekapViewProps> = ({
 
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-[20px] font-bold">Rekap Kehadiran Mingguan</h2>
+              <h2 className="text-[18px] sm:text-[20px] font-bold leading-tight pr-2">Rekap Kehadiran Mingguan</h2>
               <p className="text-[12px] text-[#cfe4ff]">
                 {isTeacherOrAdmin
                   ? `Laporan presensi mengajar ${session?.nama || 'Guru Mapel'}`
@@ -140,7 +140,7 @@ export const RekapView: React.FC<RekapViewProps> = ({
               <button
                 type="button"
                 onClick={() => setIsClassDropdownOpen(!isClassDropdownOpen)}
-                className="bg-white/20 hover:bg-white/30 backdrop-blur-md px-3.5 py-1.5 rounded-full flex items-center gap-1.5 text-[12px] font-bold active:scale-95 transition-all cursor-pointer ring-1 ring-white/30 shadow-xs"
+                className="bg-white/20 hover:bg-white/30 backdrop-blur-md px-3.5 py-1.5 rounded-full flex items-center gap-1.5 text-[12px] font-bold active:scale-95 transition-all cursor-pointer ring-1 ring-white/30 shadow-xs whitespace-nowrap shrink-0"
                 title="Pilih Kelas / Rombel"
               >
                 <span className="material-symbols-outlined text-[16px]">school</span>
@@ -154,7 +154,7 @@ export const RekapView: React.FC<RekapViewProps> = ({
               </button>
 
               {isClassDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-44 bg-white rounded-2xl shadow-2xl border border-[#eceef0] py-1.5 z-30 animate-fadeIn text-[#191c1e]">
+                <div className="absolute right-0 top-full mt-1.5 w-48 max-h-64 overflow-y-auto bg-white rounded-2xl shadow-2xl border border-[#eceef0] py-1.5 z-30 animate-fadeIn text-[#191c1e]">
                   {classList.map((c) => (
                     <button
                       key={c}
@@ -235,16 +235,16 @@ export const RekapView: React.FC<RekapViewProps> = ({
 
           {/* Class KPI Card */}
           <div className="bg-white rounded-3xl p-5 shadow-md border border-[#eceef0]/70 flex flex-col gap-3">
-            <div className="flex items-center justify-between pb-2 border-b border-[#eceef0]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#eceef0]">
               <div>
                 <p className="text-[11px] uppercase tracking-wider text-[#404751] font-bold">
                   Kehadiran {selectedClass} • {selectedWeek.split(' ')[0]}
                 </p>
-                <div className="flex items-baseline gap-2">
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mt-0.5">
                   <p className="text-[32px] font-extrabold text-[#00609b] leading-tight">
                     {classAttendancePct}%
                   </p>
-                  <span className="text-[12px] font-bold text-[#006947]">
+                  <span className="text-[12px] font-bold text-[#006947] whitespace-nowrap">
                     ({hadirCount}/{totalStudentsCount} Siswa Hadir)
                   </span>
                 </div>
@@ -253,7 +253,7 @@ export const RekapView: React.FC<RekapViewProps> = ({
                 <button
                   type="button"
                   onClick={handleExportClassExcel}
-                  className="px-3 py-1.5 rounded-xl bg-[#00609b] hover:bg-[#0079c2] text-white text-[11px] font-bold shadow-xs flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-[#00609b] hover:bg-[#0079c2] text-white text-[11px] font-bold shadow-xs flex items-center gap-1 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
                   title="Unduh format spreadsheet mingguan"
                 >
                   <span className="material-symbols-outlined text-[15px]">file_download</span>
@@ -262,7 +262,7 @@ export const RekapView: React.FC<RekapViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsExportModalOpen(true)}
-                  className="px-3 py-1.5 rounded-xl bg-white border border-[#00609b] text-[#00609b] hover:bg-[#cfe4ff]/30 text-[11px] font-bold shadow-xs flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-white border border-[#00609b] text-[#00609b] hover:bg-[#cfe4ff]/30 text-[11px] font-bold shadow-xs flex items-center gap-1 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
                   title="Pusat Export Excel (Semua Periode: Bulanan, 3 Bulan, Semester, Guru)"
                 >
                   <span className="material-symbols-outlined text-[15px]">tune</span>

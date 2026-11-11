@@ -157,9 +157,9 @@ export const WhatsAppGatewayView: React.FC<WhatsAppGatewayViewProps> = ({ onShow
             </span>
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-[17px] font-black tracking-tight">WhatsApp Web JS Gateway (Super Admin)</h2>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-[#075e54] uppercase tracking-wider">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-[16px] sm:text-[17px] font-black tracking-tight">WhatsApp Web JS Gateway (Super Admin)</h2>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-[#075e54] uppercase tracking-wider whitespace-nowrap shrink-0">
                 Baileys v7
               </span>
             </div>
@@ -170,15 +170,15 @@ export const WhatsAppGatewayView: React.FC<WhatsAppGatewayViewProps> = ({ onShow
         </div>
 
         {/* Live Status Badge */}
-        <div className="relative z-10 flex items-center gap-2.5 bg-black/20 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20">
+        <div className="relative z-10 flex items-center gap-2.5 bg-black/20 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 max-w-full">
           <span
-            className={`w-3.5 h-3.5 rounded-full ${
+            className={`w-3.5 h-3.5 rounded-full shrink-0 ${
               isConnected
                 ? 'bg-[#25d366] ring-4 ring-emerald-300 animate-pulse'
                 : 'bg-amber-400 ring-4 ring-amber-200 animate-bounce'
             }`}
           />
-          <div className="flex flex-col text-left">
+          <div className="flex flex-col text-left min-w-0">
             <span className="text-[11px] font-bold uppercase tracking-wider">
               {isConnected ? 'WhatsApp Terhubung (Connected)' : 'Menunggu Scan QR / Pairing'}
             </span>
@@ -196,20 +196,20 @@ export const WhatsAppGatewayView: React.FC<WhatsAppGatewayViewProps> = ({ onShow
         {/* Kolom Kiri: Real WhatsApp Web Authentication (QR & Pairing Code) */}
         <div className="lg:col-span-5 bg-white rounded-3xl p-5 shadow-sm border border-emerald-100 flex flex-col items-center text-center">
           
-          <div className="w-full flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+          <div className="w-full flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100 mb-3">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined notranslate text-emerald-600 text-[20px]">
                 phonelink_ring
               </span>
-              <h3 className="text-sm font-bold text-slate-800">Tautkan WhatsApp Guru</h3>
+              <h3 className="text-sm font-bold text-slate-800 whitespace-nowrap">Tautkan WhatsApp Guru</h3>
             </div>
             
             {/* Tab Mode: QR vs Pairing Code */}
-            <div className="flex bg-slate-100 p-1 rounded-xl text-[11px] font-bold">
+            <div className="flex bg-slate-100 p-1 rounded-xl text-[11px] font-bold shrink-0">
               <button
                 type="button"
                 onClick={() => setLinkMode('qr')}
-                className={`px-2.5 py-1 rounded-lg transition ${
+                className={`px-2.5 py-1 rounded-lg transition whitespace-nowrap cursor-pointer ${
                   linkMode === 'qr' ? 'bg-white text-emerald-800 shadow-xs' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -218,7 +218,7 @@ export const WhatsAppGatewayView: React.FC<WhatsAppGatewayViewProps> = ({ onShow
               <button
                 type="button"
                 onClick={() => setLinkMode('pairing_code')}
-                className={`px-2.5 py-1 rounded-lg transition ${
+                className={`px-2.5 py-1 rounded-lg transition whitespace-nowrap cursor-pointer ${
                   linkMode === 'pairing_code' ? 'bg-white text-emerald-800 shadow-xs' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -262,11 +262,13 @@ export const WhatsAppGatewayView: React.FC<WhatsAppGatewayViewProps> = ({ onShow
                     {/* Floating WhatsApp Logo */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <div className="w-12 h-12 bg-white rounded-2xl shadow-md flex items-center justify-center p-2 border border-slate-200">
-                        <img
-                          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-                          alt="WhatsApp"
-                          className="w-8 h-8 object-contain"
-                        />
+                        <svg viewBox="0 0 32 32" className="w-8 h-8" aria-label="WhatsApp" role="img">
+                          <circle cx="16" cy="16" r="15" fill="#25D366" />
+                          <path
+                            fill="#FFFFFF"
+                            d="M22.7 19.2c-.3-.2-2-.99-2.3-1.1-.31-.11-.53-.17-.75.17-.22.34-.86 1.1-1.06 1.33-.2.22-.39.25-.72.08-.34-.17-1.42-.52-2.7-1.66-.99-.89-1.67-1.99-1.87-2.33-.2-.34-.02-.52.15-.69.15-.15.34-.39.5-.59.17-.2.22-.34.34-.56.11-.22.06-.42-.03-.59-.08-.17-.75-1.81-1.03-2.48-.27-.65-.55-.56-.75-.57h-.64c-.22 0-.59.08-.89.42-.31.34-1.17 1.14-1.17 2.79s1.2 3.24 1.37 3.46c.17.22 2.36 3.6 5.71 5.05.8.35 1.42.55 1.91.71.8.25 1.53.22 2.11.13.64-.1 1.97-.81 2.25-1.59.28-.78.28-1.45.2-1.59-.08-.14-.3-.22-.64-.39z"
+                          />
+                        </svg>
                       </div>
                     </div>
                   </div>
